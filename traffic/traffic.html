@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Traffic Management</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #0b1220;
+
+      color: #f8fafc;
+    }
+
+    .header {
+      height: 70px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 24px;
+
+      background: #111827;
+
+      border-bottom:
+        1px solid #334155;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+      place-items: center;
+
+      background: #172554;
+
+      border-radius: 10px;
+
+      font-size: 24px;
+    }
+
+    h1 {
+      font-size: 19px;
+    }
+
+    .subtitle {
+      margin-top: 3px;
+
+      color: #94a3b8;
+
+      font-size: 12px;
+    }
+
+    .back {
+      padding: 9px 14px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .back:hover {
+      background: #334155;
+    }
+
+    .layout {
+      display: grid;
+
+      grid-template-columns:
+        280px 1fr;
+
+      min-height:
+        calc(100vh - 70px);
+    }
+
+    .sidebar {
+      padding: 18px;
+
+      background: #101827;
+
+      border-right:
+        1px solid #334155;
+    }
+
+    .panel {
+      padding: 15px;
+
+      margin-bottom: 15px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+
+      font-size: 14px;
+    }
+
+    .traffic-score {
+      text-align: center;
+    }
+
+    .traffic-number {
+      font-size: 42px;
+
+      font-weight: bold;
+
+      margin: 10px 0;
+    }
+
+    .traffic-label {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .good {
+      color: #4ade80;
+    }
+
+    .medium {
+      color: #facc15;
+    }
+
+    .bad {
+      color: #ef4444;
+    }
+
+    .info {
+      display: flex;
+
+      justify-content: space-between;
+
+      padding: 9px 0;
+
+      border-bottom:
+        1px solid #29364a;
+
+      font-size: 12px;
+    }
+
+    .info:last-child {
+      border-bottom: none;
+    }
+
+    .info strong {
+      color: #7dd3fc;
+    }
+
+    .main {
+      padding: 22px;
+
+      background: #0f172a;
+    }
+
+    .dashboard {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 16px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .card-title {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .card-value {
+      margin-top: 8px;
+
+      font-size: 25px;
+
+      font-weight: bold;
+    }
+
+    .road-map {
+      min-height: 480px;
+
+      position: relative;
+
+      overflow: hidden;
+
+      background: #547c50;
+
+      border:
+        2px solid #334155;
+
+      border-radius: 12px;
+    }
+
+    /* ROAD */
+
+    .horizontal-road {
+      position: absolute;
+
+      left: 0;
+      right: 0;
+
+      top: 48%;
+
+      height: 90px;
+
+      background: #4b5563;
+    }
+
+    .vertical-road {
+      position: absolute;
+
+      top: 0;
+      bottom: 0;
+
+      left: 48%;
+
+      width: 90px;
+
+      background: #4b5563;
+    }
+
+    .horizontal-road::after {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      right: 0;
+
+      top: 44px;
+
+      height: 3px;
+
+      background:
+        repeating-linear-gradient(
+          to right,
+          #f8fafc 0 30px,
+          transparent 30px 60px
+        );
+
+      opacity: 0.7;
+    }
+
+    .vertical-road::after {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      bottom: 0;
+
+      left: 44px;
+
+      width: 3px;
+
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #f8fafc 0 30px,
+          transparent 30px 60px
+        );
+
+      opacity: 0.7;
+    }
+
+    /* TRAFFIC LIGHT */
+
+    .traffic-light {
+      position: absolute;
+
+      left: 43%;
+
+      top: 39%;
+
+      width: 35px;
+      height: 80px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+
+      justify-content: space-around;
+
+      padding: 5px;
+
+      background: #111827;
+
+      border:
+        2px solid #020617;
+
+      border-radius: 7px;
+
+      z-index: 5;
+    }
+
+    .light {
+      width: 15px;
+      height: 15px;
+
+      border-radius: 50%;
+
+      background: #374151;
+    }
+
+    .light.red.active {
+      background: #ef4444;
+
+      box-shadow:
+        0 0 12px #ef4444;
+    }
+
+    .light.yellow.active {
+      background: #facc15;
+
+      box-shadow:
+        0 0 12px #facc15;
+    }
+
+    .light.green.active {
+      background: #22c55e;
+
+      box-shadow:
+        0 0 12px #22c55e;
+    }
+
+    /* CARS */
+
+    .car {
+      position: absolute;
+
+      width: 25px;
+      height: 15px;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 16px;
+
+      z-index: 10;
+
+      transition:
+        left 0.4s linear,
+        top 0.4s linear;
+    }
+
+    .road-name {
+      position: absolute;
+
+      left: 15px;
+      top: 15px;
+
+      padding: 7px 10px;
+
+      background:
+        rgba(15, 23, 42, 0.85);
+
+      border-radius: 6px;
+
+      font-size: 11px;
+    }
+
+    @media (max-width: 850px) {
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+
+        border-bottom:
+          1px solid #334155;
+      }
+
+      .dashboard {
+        grid-template-columns:
+          1fr;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <header class="header">
+
+    <div class="title">
+
+      <div class="icon">
+        🚦
+      </div>
+
+      <div>
+
+        <h1>
+          Traffic Management
+        </h1>
+
+        <div class="subtitle">
+          City Manager Simulator
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="back"
+      onclick="goBack()"
+    >
+      ← City
+    </button>
+
+  </header>
+
+
+  <div class="layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+
+      <div class="panel traffic-score">
+
+        <h2>
+          Traffic Level
+        </h2>
+
+        <div
+          id="trafficNumber"
+          class="traffic-number good"
+        >
+          18%
+        </div>
+
+        <div
+          id="trafficLabel"
+          class="traffic-label"
+        >
+          LOW TRAFFIC
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          🚗 Traffic Statistics
+        </h2>
+
+
+        <div class="info">
+
+          <span>
+            Vehicles
+          </span>
+
+          <strong id="vehicles">
+            12
+          </strong>
+
+        </div>
+
+
+        <div class="info">
+
+          <span>
+            Average Speed
+          </span>
+
+          <strong>
+            <span id="speed">
+              42
+            </span>
+            km/h
+          </strong>
+
+        </div>
+
+
+        <div class="info">
+
+          <span>
+            Road Usage
+          </span>
+
+          <strong>
+            <span id="usage">
+              24
+            </span>%
+          </strong>
+
+        </div>
+
+
+        <div class="info">
+
+          <span>
+            Congestion
+          </span>
+
+          <strong id="congestion">
+            Low
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          🚦 Traffic Light
+        </h2>
+
+        <div class="info">
+
+          <span>
+            Current
+          </span>
+
+          <strong id="lightState">
+            GREEN
+          </strong>
+
+        </div>
+
+        <div class="info">
+
+          <span>
+            Cycle
+          </span>
+
+          <strong>
+            30 sec
+          </strong>
+
+        </div>
+
+      </div>
+
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+      <div class="dashboard">
+
+
+        <div class="card">
+
+          <div class="card-title">
+            VEHICLES / MINUTE
+          </div>
+
+          <div
+            id="vehicleRate"
+            class="card-value"
+          >
+            8
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            ROAD CAPACITY
+          </div>
+
+          <div
+            id="capacity"
+            class="card-value"
+          >
+            76%
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            CITIZEN DELAY
+          </div>
+
+          <div
+            id="delay"
+            class="card-value"
+          >
+            2 min
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ROAD MAP -->
+
+      <div
+        class="road-map"
+        id="roadMap"
+      >
+
+        <div class="road-name">
+          🚦 Central Avenue
+        </div>
+
+
+        <div class="horizontal-road"></div>
+
+        <div class="vertical-road"></div>
+
+
+        <!-- TRAFFIC LIGHT -->
+
+        <div
+          class="traffic-light"
+          id="trafficLight"
+        >
+
+          <div
+            class="light red"
+          ></div>
+
+          <div
+            class="light yellow"
+          ></div>
+
+          <div
+            class="light green active"
+          ></div>
+
+        </div>
+
+
+        <!-- CARS ARE CREATED BY JS -->
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <script>
+
+    /* =========================================
+       TRAFFIC SIMULATION
+    ========================================= */
+
+    const roadMap =
+      document.getElementById(
+        "roadMap"
+      );
+
+    const vehiclesEl =
+      document.getElementById(
+        "vehicles"
+      );
+
+    const speedEl =
+      document.getElementById(
+        "speed"
+      );
+
+    const usageEl =
+      document.getElementById(
+        "usage"
+      );
+
+    const congestionEl =
+      document.getElementById(
+        "congestion"
+      );
+
+    const trafficNumberEl =
+      document.getElementById(
+        "trafficNumber"
+      );
+
+    const trafficLabelEl =
+      document.getElementById(
+        "trafficLabel"
+      );
+
+    const vehicleRateEl =
+      document.getElementById(
+        "vehicleRate"
+      );
+
+    const capacityEl =
+      document.getElementById(
+        "capacity"
+      );
+
+    const delayEl =
+      document.getElementById(
+        "delay"
+      );
+
+    const lightStateEl =
+      document.getElementById(
+        "lightState"
+      );
+
+    const lights =
+      document.querySelectorAll(
+        ".light"
+      );
+
+
+    let trafficLight =
+      "green";
+
+
+    let lightTimer = 0;
+
+
+    const cars = [];
+
+
+    /* =========================================
+       CREATE CARS
+    ========================================= */
+
+    function createCars() {
+
+      for (
+        let i = 0;
+        i < 12;
+        i++
+      ) {
+
+        const car =
+          document.createElement(
+            "div"
+          );
+
+        car.className =
+          "car";
+
+        car.textContent =
+          i % 2 === 0
+            ? "🚗"
+            : "🚙";
+
+        car.dataset.direction =
+          i % 2 === 0
+            ? "horizontal"
+            : "vertical";
+
+        car.dataset.position =
+          String(
+            Math.random() * 100
+          );
+
+        roadMap.appendChild(
+          car
+        );
+
+        cars.push(car);
+
+      }
+
+    }
+
+
+    /* =========================================
+       MOVE CARS
+    ========================================= */
+
+    function moveCars() {
+
+      cars.forEach(
+        function(car) {
+
+          let position =
+            parseFloat(
+              car.dataset.position
+            );
+
+
+          /*
+            RED LIGHT:
+            Some cars slow down
+          */
+
+          if (
+            trafficLight ===
+              "red" &&
+            position > 42 &&
+            position < 58
+          ) {
+
+            return;
+
+          }
+
+
+          position +=
+            Math.random() * 2 + 0.7;
+
+
+          if (position > 100) {
+
+            position = 0;
+
+          }
+
+
+          car.dataset.position =
+            String(position);
+
+
+          if (
+            car.dataset.direction ===
+            "horizontal"
+          ) {
+
+            car.style.left =
+              position + "%";
+
+            car.style.top =
+              "51%";
+
+          } else {
+
+            car.style.top =
+              position + "%";
+
+            car.style.left =
+              "49%";
+
+          }
+
+        }
+      );
+
+    }
+
+
+    /* =========================================
+       TRAFFIC LIGHT
+    ========================================= */
+
+    function updateTrafficLight() {
+
+      lightTimer++;
+
+
+      if (
+        trafficLight ===
+          "green" &&
+        lightTimer >= 15
+      ) {
+
+        trafficLight =
+          "yellow";
+
+        lightTimer = 0;
+
+      }
+
+      else if (
+        trafficLight ===
+          "yellow" &&
+        lightTimer >= 4
+      ) {
+
+        trafficLight =
+          "red";
+
+        lightTimer = 0;
+
+      }
+
+      else if (
+        trafficLight ===
+          "red" &&
+        lightTimer >= 15
+      ) {
+
+        trafficLight =
+          "green";
+
+        lightTimer = 0;
+
+      }
+
+
+      lights.forEach(
+        function(light) {
+
+          light.classList.remove(
+            "active"
+          );
+
+        }
+      );
+
+
+      const active =
+        document.querySelector(
+          ".light." +
+          trafficLight
+        );
+
+
+      if (active) {
+
+        active.classList.add(
+          "active"
+        );
+
+      }
+
+
+      lightStateEl.textContent =
+        trafficLight
+          .toUpperCase();
+
+    }
+
+
+    /* =========================================
+       UPDATE STATISTICS
+    ========================================= */
+
+    function updateStats() {
+
+      const traffic =
+        Math.floor(
+          10 +
+          Math.random() * 30
+        );
+
+      const usage =
+        Math.floor(
+          20 +
+          Math.random() * 35
+        );
+
+      const speed =
+        Math.max(
+          20,
+          55 - traffic
+        );
+
+      const delay =
+        Math.max(
+          1,
+          Math.floor(
+            traffic / 10
+          )
+        );
+
+
+      trafficNumberEl.textContent =
+        traffic + "%";
+
+
+      usageEl.textContent =
+        usage;
+
+
+      speedEl.textContent =
+        speed;
+
+
+      capacityEl.textContent =
+        (100 - usage) +
+        "%";
+
+
+      delayEl.textContent =
+        delay +
+        " min";
+
+
+      vehicleRateEl.textContent =
+        Math.floor(
+          5 +
+          Math.random() * 8
+        );
+
+
+      if (traffic < 35) {
+
+        trafficNumberEl.className =
+          "traffic-number good";
+
+        trafficLabelEl.textContent =
+          "LOW TRAFFIC";
+
+        congestionEl.textContent =
+          "Low";
+
+      }
+
+      else if (traffic < 65) {
+
+        trafficNumberEl.className =
+          "traffic-number medium";
+
+        trafficLabelEl.textContent =
+          "MODERATE TRAFFIC";
+
+        congestionEl.textContent =
+          "Medium";
+
+      }
+
+      else {
+
+        trafficNumberEl.className =
+          "traffic-number bad";
+
+        trafficLabelEl.textContent =
+          "HEAVY TRAFFIC";
+
+        congestionEl.textContent =
+          "High";
+
+      }
+
+    }
+
+
+    /* =========================================
+       BACK TO CITY
+    ========================================= */
+
+    function goBack() {
+
+      window.location.href =
+        "../index.html";
+
+    }
+
+
+    /* =========================================
+       START
+    ========================================= */
+
+    createCars();
+
+    updateStats();
+
+
+    setInterval(
+      moveCars,
+      500
+    );
+
+
+    setInterval(
+      updateTrafficLight,
+      1000
+    );
+
+
+    setInterval(
+      updateStats,
+      3000
+    );
+
+  </script>
+
+</body>
+
+</html>
+```
