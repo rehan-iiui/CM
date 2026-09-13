@@ -1,0 +1,834 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0b1220;
+  --panel: #172033;
+  --panel-light: #202d43;
+  --border: #334155;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --green: #4ade80;
+  --danger: #ef4444;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* =========================================
+   TOP BAR
+========================================= */
+
+.topbar {
+  height: 76px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 0 18px;
+
+  background: #080f1c;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  min-width: 215px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+  place-items: center;
+
+  background: #172554;
+  border: 1px solid #263b70;
+  border-radius: 12px;
+
+  font-size: 25px;
+}
+
+.brand-text h1 {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.brand-text span {
+  display: block;
+  margin-top: 3px;
+
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* =========================================
+   TOP STATISTICS
+========================================= */
+
+.stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex: 1;
+}
+
+.stat {
+  min-width: 108px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 0 11px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.stat > span {
+  font-size: 20px;
+}
+
+.stat small {
+  display: block;
+  margin-bottom: 2px;
+
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 13px;
+}
+
+/* =========================================
+   TOP BUTTONS
+========================================= */
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.top-actions button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+
+  padding: 10px 13px;
+
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    transform 0.15s;
+}
+
+.top-actions button:hover {
+  background: var(--panel-light);
+}
+
+.top-actions button:active {
+  transform: scale(0.96);
+}
+
+/* =========================================
+   MAIN LAYOUT
+========================================= */
+
+.game-layout {
+  width: 100%;
+  height: calc(100vh - 76px);
+
+  display: flex;
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+  width: 270px;
+  min-width: 270px;
+
+  padding: 14px;
+
+  overflow-y: auto;
+
+  background: #101827;
+  border-right: 1px solid var(--border);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 20px;
+}
+
+/* =========================================
+   PANELS
+========================================= */
+
+.panel {
+  padding: 13px;
+  margin-bottom: 13px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+.panel h2 {
+  margin-bottom: 11px;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* =========================================
+   BUILD BUTTONS
+========================================= */
+
+.build-btn {
+  width: 100%;
+  min-height: 50px;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-bottom: 7px;
+  padding: 8px 9px;
+
+  color: var(--text);
+  text-align: left;
+
+  background: var(--panel-light);
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    border 0.2s,
+    transform 0.15s;
+}
+
+.build-btn:hover {
+  background: #2b3a52;
+}
+
+.build-btn:active {
+  transform: scale(0.98);
+}
+
+.build-btn.active {
+  background: #123653;
+  border-color: var(--accent);
+}
+
+.build-btn > span {
+  width: 28px;
+  text-align: center;
+  font-size: 21px;
+}
+
+.build-btn div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.build-btn b {
+  font-size: 13px;
+}
+
+.build-btn small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* BULDOZE */
+
+.build-btn.bulldoze {
+  margin-top: 12px;
+  background: #3a2025;
+}
+
+.build-btn.bulldoze:hover {
+  background: #4b252c;
+}
+
+.build-btn.bulldoze.active {
+  border-color: var(--danger);
+}
+
+/* =========================================
+   CITY STATISTICS
+========================================= */
+
+.info-row {
+  min-height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 7px 2px;
+
+  border-bottom: 1px solid #2d3a4e;
+
+  font-size: 12px;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row strong {
+  color: #7dd3fc;
+  font-size: 13px;
+}
+
+/* =========================================
+   CONTROL BUTTONS
+========================================= */
+
+.control-btn {
+  width: 100%;
+
+  margin-bottom: 7px;
+  padding: 10px;
+
+  color: var(--text);
+
+  background: var(--panel-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.control-btn:last-child {
+  margin-bottom: 0;
+}
+
+.control-btn:hover {
+  background: #334155;
+}
+
+/* =========================================
+   CITY SYSTEM BUTTONS
+========================================= */
+
+.feature-btn {
+  width: 100%;
+
+  padding: 9px 10px;
+  margin-bottom: 6px;
+
+  color: #dbeafe;
+  text-align: left;
+
+  background: #1b2739;
+  border: 1px solid #2d3b50;
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.feature-btn:hover {
+  background: #263750;
+  border-color: #4b6380;
+}
+
+.feature-btn:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================
+   MAIN GAME AREA
+========================================= */
+
+.game-area {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #0f172a;
+}
+
+/* =========================================
+   CITY HEADER
+========================================= */
+
+.city-header {
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+
+  background: #162033;
+  border-bottom: 1px solid var(--border);
+}
+
+.city-header h2 {
+  font-size: 17px;
+}
+
+.city-header p {
+  margin-top: 4px;
+
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.time-box {
+  min-width: 90px;
+  text-align: right;
+}
+
+.time-box span {
+  display: block;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.time-box small {
+  display: block;
+  margin-top: 3px;
+
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* =========================================
+   MAP WRAPPER
+========================================= */
+
+.map-wrapper {
+  flex: 1;
+
+  overflow: auto;
+
+  padding: 25px;
+
+  background-color: #47734c;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 40px 40px;
+}
+
+.map-wrapper::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.map-wrapper::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 20px;
+}
+
+/* =========================================
+   CITY MAP
+========================================= */
+
+#cityMap {
+  width: 960px;
+  height: 600px;
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns: repeat(24, 40px);
+  grid-template-rows: repeat(15, 40px);
+
+  background: #70a05f;
+
+  border: 4px solid #304f35;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================
+   MAP TILES
+========================================= */
+
+.tile {
+  width: 40px;
+  height: 40px;
+
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  background: #70a05f;
+
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    filter 0.1s,
+    transform 0.1s;
+}
+
+.tile:hover {
+  filter: brightness(1.15);
+
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+
+  z-index: 5;
+}
+
+/* =========================================
+   ROAD
+========================================= */
+
+.tile.road {
+  background: #4b5563;
+}
+
+.tile.road::after {
+  content: "";
+
+  position: absolute;
+
+  width: 100%;
+  height: 2px;
+
+  background: #f8fafc;
+
+  opacity: 0.55;
+
+  pointer-events: none;
+}
+
+/* =========================================
+   BUILDINGS
+========================================= */
+
+.tile.house {
+  background: #60a5fa;
+}
+
+.tile.shop {
+  background: #f59e0b;
+}
+
+.tile.office {
+  background: #6366f1;
+}
+
+.tile.factory {
+  background: #64748b;
+}
+
+.tile.park {
+  background: #22c55e;
+}
+
+/* =========================================
+   BUILDING ICON
+========================================= */
+
+.building-icon {
+  position: relative;
+  z-index: 2;
+
+  font-size: 23px;
+  line-height: 1;
+
+  pointer-events: none;
+
+  filter:
+    drop-shadow(
+      0 2px 2px rgba(0, 0, 0, 0.35)
+    );
+}
+
+/* =========================================
+   BOTTOM BAR
+========================================= */
+
+.bottom-bar {
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  gap: 35px;
+
+  padding: 0 20px;
+
+  overflow-x: auto;
+
+  background: #101827;
+  border-top: 1px solid var(--border);
+}
+
+.bottom-bar div {
+  min-width: max-content;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bottom-bar span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.bottom-bar strong {
+  font-size: 13px;
+}
+
+/* =========================================
+   NOTIFICATION
+========================================= */
+
+.notification {
+  position: fixed;
+
+  right: 20px;
+  bottom: 78px;
+
+  max-width: 300px;
+
+  padding: 12px 15px;
+
+  color: white;
+
+  background: #111827;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.4);
+
+  font-size: 13px;
+
+  opacity: 0;
+
+  transform: translateY(12px);
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+
+  z-index: 1000;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+   BUTTON FOCUS
+========================================= */
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* =========================================
+   MOBILE / SMALL SCREENS
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .stats {
+    gap: 5px;
+  }
+
+  .stat {
+    min-width: 90px;
+  }
+
+  .top-actions button {
+    padding: 9px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 900px) {
+
+  .topbar {
+    height: 68px;
+  }
+
+  .game-layout {
+    height: calc(100vh - 68px);
+  }
+
+  .stats {
+    display: none;
+  }
+
+  .sidebar {
+    width: 230px;
+    min-width: 230px;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .topbar {
+    padding: 0 9px;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 21px;
+  }
+
+  .brand-text h1 {
+    font-size: 15px;
+  }
+
+  .brand-text span {
+    display: none;
+  }
+
+  .top-actions {
+    gap: 4px;
+  }
+
+  .top-actions button {
+    padding: 7px;
+    font-size: 10px;
+  }
+
+  .sidebar {
+    width: 180px;
+    min-width: 180px;
+    padding: 8px;
+  }
+
+  .panel {
+    padding: 9px;
+  }
+
+  .city-header {
+    height: 62px;
+    padding: 0 10px;
+  }
+
+  .city-header h2 {
+    font-size: 14px;
+  }
+
+  .city-header p {
+    font-size: 10px;
+  }
+
+  .bottom-bar {
+    display: none;
+  }
+
+  .map-wrapper {
+    padding: 12px;
+  }
+}
+
+/* =========================================
+   VERY SMALL SCREENS
+========================================= */
+
+@media (max-width: 450px) {
+
+  .sidebar {
+    width: 155px;
+    min-width: 155px;
+  }
+
+  .build-btn {
+    min-height: 44px;
+  }
+
+  .build-btn > span {
+    font-size: 18px;
+  }
+
+  .build-btn b {
+    font-size: 11px;
+  }
+
+  .build-btn small {
+    font-size: 9px;
+  }
+
+  .panel h2 {
+    font-size: 12px;
+  }
+
+  .top-actions button {
+    font-size: 9px;
+    padding: 6px;
+  }
+}
+```
