@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Police Department - City Manager Simulator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b1220;
+      --panel: #172033;
+      --panel-light: #202d43;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #ef4444;
+      --purple: #a78bfa;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .topbar {
+      min-height: 76px;
+      padding: 14px 24px;
+      background: #111a2b;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: #1e3a5f;
+      font-size: 25px;
+    }
+
+    .brand h1 {
+      font-size: 21px;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .top-actions button {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 15px;
+      border-radius: 9px;
+    }
+
+    .top-actions button:hover {
+      background: var(--panel-light);
+    }
+
+    .dashboard {
+      padding: 22px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    .page-title {
+      margin-bottom: 20px;
+    }
+
+    .page-title h2 {
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+
+    .page-title p {
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .card-icon {
+      font-size: 23px;
+    }
+
+    .card small {
+      color: var(--muted);
+    }
+
+    .card strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 25px;
+    }
+
+    .green {
+      color: var(--green);
+    }
+
+    .yellow {
+      color: var(--yellow);
+    }
+
+    .red {
+      color: var(--red);
+    }
+
+    .blue {
+      color: var(--blue);
+    }
+
+    .purple {
+      color: var(--purple);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .panel h3 {
+      font-size: 17px;
+      margin-bottom: 16px;
+    }
+
+    .map {
+      position: relative;
+      height: 390px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(90deg, transparent 47%, #334155 47%, #334155 50%, transparent 50%),
+        linear-gradient(0deg, transparent 46%, #334155 46%, #334155 50%, transparent 50%),
+        #102235;
+    }
+
+    .map::before,
+    .map::after {
+      content: "";
+      position: absolute;
+      background: #263b4f;
+    }
+
+    .map::before {
+      width: 100%;
+      height: 8px;
+      top: 28%;
+      left: 0;
+    }
+
+    .map::after {
+      height: 100%;
+      width: 8px;
+      left: 68%;
+      top: 0;
+    }
+
+    .district {
+      position: absolute;
+      border: 1px dashed #64748b;
+      border-radius: 10px;
+      color: #cbd5e1;
+      font-size: 11px;
+      padding: 6px;
+      background: rgba(15, 23, 42, .35);
+    }
+
+    .district.one {
+      width: 32%;
+      height: 35%;
+      top: 7%;
+      left: 5%;
+    }
+
+    .district.two {
+      width: 28%;
+      height: 36%;
+      top: 7%;
+      right: 5%;
+    }
+
+    .district.three {
+      width: 32%;
+      height: 38%;
+      bottom: 7%;
+      left: 5%;
+    }
+
+    .district.four {
+      width: 28%;
+      height: 38%;
+      bottom: 7%;
+      right: 5%;
+    }
+
+    .station,
+    .patrol {
+      position: absolute;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(56, 189, 248, .12);
+    }
+
+    .station {
+      width: 43px;
+      height: 43px;
+      background: #1d4ed8;
+      font-size: 21px;
+    }
+
+    .station.s1 {
+      left: 42%;
+      top: 20%;
+    }
+
+    .station.s2 {
+      left: 17%;
+      bottom: 18%;
+    }
+
+    .station.s3 {
+      right: 15%;
+      bottom: 19%;
+    }
+
+    .patrol {
+      width: 31px;
+      height: 31px;
+      background: #0ea5e9;
+      font-size: 15px;
+      animation: patrolMove 3s infinite alternate ease-in-out;
+    }
+
+    .patrol.p1 {
+      left: 27%;
+      top: 37%;
+    }
+
+    .patrol.p2 {
+      right: 28%;
+      top: 50%;
+      animation-delay: .7s;
+    }
+
+    .patrol.p3 {
+      left: 48%;
+      bottom: 17%;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes patrolMove {
+      from {
+        transform: translate(0, 0);
+      }
+
+      to {
+        transform: translate(16px, -10px);
+      }
+    }
+
+    .map-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .station-dot {
+      background: #2563eb;
+    }
+
+    .patrol-dot {
+      background: #0ea5e9;
+    }
+
+    .progress-row {
+      margin-bottom: 17px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
+
+    .progress-header span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .progress-header strong {
+      font-size: 14px;
+    }
+
+    .progress {
+      height: 9px;
+      background: #0f172a;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress div {
+      height: 100%;
+      border-radius: 20px;
+      transition: width .4s;
+    }
+
+    .progress-blue {
+      background: var(--blue);
+    }
+
+    .progress-green {
+      background: var(--green);
+    }
+
+    .progress-yellow {
+      background: var(--yellow);
+    }
+
+    .progress-red {
+      background: var(--red);
+    }
+
+    .stats-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .mini-stat {
+      padding: 13px;
+      border-radius: 10px;
+      background: var(--panel-light);
+      border: 1px solid var(--border);
+    }
+
+    .mini-stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 19px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .control {
+      padding: 13px;
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .control:hover {
+      background: #27364c;
+    }
+
+    .control span {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 5px;
+    }
+
+    .control small {
+      color: var(--muted);
+    }
+
+    .incident {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--panel-light);
+      border-left: 4px solid var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .incident:last-child {
+      margin-bottom: 0;
+    }
+
+    .incident strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .incident span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .alert {
+      padding: 14px;
+      border-radius: 10px;
+      background: #132a23;
+      border: 1px solid #245b46;
+      color: #bbf7d0;
+      margin-top: 15px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-top: 2px;
+    }
+
+    .bottom-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .bottom-box span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .bottom-box strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 20px;
+    }
+
+    .notification {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      border-radius: 10px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.35);
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: .25s;
+      z-index: 20;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1100px) {
+      .cards {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .top-actions {
+        width: 100%;
+      }
+
+      .top-actions button {
+        flex: 1;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .bottom {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard {
+        padding: 12px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-list,
+      .controls,
+      .bottom {
+        grid-template-columns: 1fr;
+      }
+
+      .map {
+        height: 320px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-icon">🚓</div>
+
+      <div>
+        <h1>Police Department</h1>
+        <span>City Manager Simulator • Public Safety</span>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="refreshBtn">🔄 Refresh</button>
+      <button id="backBtn">← Back to City</button>
+    </div>
+
+  </header>
+
+
+  <main class="dashboard">
+
+    <div class="page-title">
+      <h2>🚓 City Police Operations</h2>
+      <p>Manage public safety, patrol coverage and emergency response.</p>
+    </div>
+
+
+    <section class="cards">
+
+      <div class="card">
+        <div class="card-top">
+          <small>Officers</small>
+          <span class="card-icon">👮</span>
+        </div>
+        <strong id="officers">186</strong>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <small>Police Stations</small>
+          <span class="card-icon">🏢</span>
+        </div>
+        <strong id="stations">3</strong>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <small>Crime Rate</small>
+          <span class="card-icon">📉</span>
+        </div>
+        <strong class="green" id="crimeRate">8%</strong>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <small>Response Time</small>
+          <span class="card-icon">⏱️</span>
+        </div>
+        <strong class="blue" id="responseTime">4.2 min</strong>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <small>Safety Rating</small>
+          <span class="card-icon">🛡️</span>
+        </div>
+        <strong class="green" id="safetyRating">92%</strong>
+      </div>
+
+    </section>
+
+
+    <div class="main-grid">
+
+      <section>
+
+        <div class="panel">
+
+          <h3>🗺️ Police Coverage Map</h3>
+
+          <div class="map">
+
+            <div class="district one">
+              District A
+            </div>
+
+            <div class="district two">
+              District B
+            </div>
+
+            <div class="district three">
+              District C
+            </div>
+
+            <div class="district four">
+              District D
+            </div>
+
+            <div class="station s1">🚓</div>
+            <div class="station s2">🚓</div>
+            <div class="station s3">🚓</div>
+
+            <div class="patrol p1">🚔</div>
+            <div class="patrol p2">🚔</div>
+            <div class="patrol p3">🚔</div>
+
+          </div>
+
+          <div class="map-legend">
+
+            <div class="legend-item">
+              <span class="dot station-dot"></span>
+              Police Station
+            </div>
+
+            <div class="legend-item">
+              <span class="dot patrol-dot"></span>
+              Patrol Vehicle
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>📊 Department Performance</h3>
+
+          <div class="progress-row">
+
+            <div class="progress-header">
+              <span>Patrol Coverage</span>
+              <strong id="coverageText">91%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="coverageBar"
+                class="progress-blue"
+                style="width:91%">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-header">
+              <span>Emergency Response</span>
+              <strong id="responseText">94%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="responseBar"
+                class="progress-green"
+                style="width:94%">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-header">
+              <span>Station Capacity</span>
+              <strong id="capacityText">82%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="capacityBar"
+                class="progress-yellow"
+                style="width:82%">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-header">
+              <span>Community Safety</span>
+              <strong id="safetyText">92%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="safetyBar"
+                class="progress-green"
+                style="width:92%">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section>
+
+        <div class="panel">
+
+          <h3>📌 Department Statistics</h3>
+
+          <div class="stats-list">
+
+            <div class="mini-stat">
+              <span>🚔 Patrol Cars</span>
+              <strong id="cars">42</strong>
+            </div>
+
+            <div class="mini-stat">
+              <span>📞 Emergency Calls</span>
+              <strong id="calls">28</strong>
+            </div>
+
+            <div class="mini-stat">
+              <span>📂 Cases Handled</span>
+              <strong id="cases">143</strong>
+            </div>
+
+            <div class="mini-stat">
+              <span>🏙️ Patrol Districts</span>
+              <strong>4</strong>
+            </div>
+
+            <div class="mini-stat">
+              <span>👮 Available Officers</span>
+              <strong id="available">128</strong>
+            </div>
+
+            <div class="mini-stat">
+              <span>🚨 Active Incidents</span>
+              <strong id="incidents">2</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>⚙️ Police Controls</h3>
+
+          <div class="controls">
+
+            <button class="control" id="patrolBtn">
+              <span>🚔</span>
+              Increase Patrols
+              <small>Improve coverage</small>
+            </button>
+
+            <button class="control" id="officerBtn">
+              <span>👮</span>
+              Add Officers
+              <small>Increase department staff</small>
+            </button>
+
+            <button class="control" id="stationBtn">
+              <span>🏢</span>
+              Upgrade Station
+              <small>Increase capacity</small>
+            </button>
+
+            <button class="control" id="incidentBtn">
+              <span>🚨</span>
+              Simulate Incident
+              <small>Test emergency response</small>
+            </button>
+
+          </div>
+
+          <div class="alert" id="alert">
+            🟢 Police operations are stable. Patrol coverage is strong across the city.
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>🕒 Recent Police Activity</h3>
+
+          <div id="activityList">
+
+            <div class="incident">
+              <strong>🚔 Routine patrol completed</strong>
+              <span>District A • 5 minutes ago</span>
+            </div>
+
+            <div class="incident">
+              <strong>📞 Emergency call resolved</strong>
+              <span>District C • 12 minutes ago</span>
+            </div>
+
+            <div class="incident">
+              <strong>🛡️ Safety inspection completed</strong>
+              <span>District B • 21 minutes ago</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <section class="bottom">
+
+      <div class="bottom-box">
+        <span>📅 Daily Police Budget</span>
+        <strong id="budget">$18,500</strong>
+      </div>
+
+      <div class="bottom-box">
+        <span>🚔 Active Patrols</span>
+        <strong id="activePatrols">18</strong>
+      </div>
+
+      <div class="bottom-box">
+        <span>📈 Cases Resolved</span>
+        <strong id="resolved">96%</strong>
+      </div>
+
+      <div class="bottom-box">
+        <span>⭐ Department Rating</span>
+        <strong id="rating">4.6 / 5</strong>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <div class="notification" id="notification"></div>
+
+
+  <script>
+
+    let officers = 186;
+    let stations = 3;
+    let crimeRate = 8;
+    let responseTime = 4.2;
+    let safetyRating = 92;
+
+    let coverage = 91;
+    let response = 94;
+    let capacity = 82;
+
+    let patrolCars = 42;
+    let calls = 28;
+    let cases = 143;
+    let available = 128;
+    let incidents = 2;
+
+    let activePatrols = 18;
+    let resolved = 96;
+    let budget = 18500;
+
+
+    const $ = id => document.getElementById(id);
+
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+
+    function showNotification(message) {
+
+      const notification = $("notification");
+
+      notification.textContent = message;
+      notification.classList.add("show");
+
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 2500);
+    }
+
+
+    function updateUI() {
+
+      $("officers").textContent = officers;
+      $("stations").textContent = stations;
+
+      $("crimeRate").textContent = crimeRate + "%";
+      $("responseTime").textContent = responseTime.toFixed(1) + " min";
+      $("safetyRating").textContent = safetyRating + "%";
+
+      $("coverageText").textContent = coverage + "%";
+      $("responseText").textContent = response + "%";
+      $("capacityText").textContent = capacity + "%";
+      $("safetyText").textContent = safetyRating + "%";
+
+      $("coverageBar").style.width = coverage + "%";
+      $("responseBar").style.width = response + "%";
+      $("capacityBar").style.width = capacity + "%";
+      $("safetyBar").style.width = safetyRating + "%";
+
+      $("cars").textContent = patrolCars;
+      $("calls").textContent = calls;
+      $("cases").textContent = cases;
+      $("available").textContent = available;
+      $("incidents").textContent = incidents;
+
+      $("activePatrols").textContent = activePatrols;
+      $("resolved").textContent = resolved + "%";
+      $("budget").textContent =
+        "$" + budget.toLocaleString();
+
+      $("crimeRate").className =
+        crimeRate <= 10 ? "green" :
+        crimeRate <= 18 ? "yellow" :
+        "red";
+
+      $("safetyRating").className =
+        safetyRating >= 80 ? "green" :
+        safetyRating >= 60 ? "yellow" :
+        "red";
+
+      updateAlert();
+    }
+
+
+    function updateAlert() {
+
+      const alert = $("alert");
+
+      if (incidents >= 6) {
+
+        alert.textContent =
+          "🔴 Multiple incidents are active. Increase patrols and improve emergency response.";
+
+        alert.style.background = "#35171b";
+        alert.style.borderColor = "#7f1d1d";
+        alert.style.color = "#fecaca";
+
+      } else if (crimeRate >= 18) {
+
+        alert.textContent =
+          "🟡 Crime levels are rising. Consider increasing patrol coverage.";
+
+        alert.style.background = "#332b12";
+        alert.style.borderColor = "#6b5a16";
+        alert.style.color = "#fef08a";
+
+      } else {
+
+        alert.textContent =
+          "🟢 Police operations are stable. Patrol coverage is strong across the city.";
+
+        alert.style.background = "#132a23";
+        alert.style.borderColor = "#245b46";
+        alert.style.color = "#bbf7d0";
+      }
+    }
+
+
+    function addActivity(title, detail) {
+
+      const list = $("activityList");
+
+      const item = document.createElement("div");
+
+      item.className = "incident";
+
+      item.innerHTML = `
+        <strong>${title}</strong>
+        <span>${detail}</span>
+      `;
+
+      list.prepend(item);
+
+      while (list.children.length > 5) {
+        list.removeChild(list.lastChild);
+      }
+    }
+
+
+    $("patrolBtn").addEventListener("click", () => {
+
+      if (patrolCars <= 0) {
+        showNotification("No patrol cars available.");
+        return;
+      }
+
+      activePatrols += 2;
+      coverage = clamp(coverage + 4, 0, 100);
+      crimeRate = clamp(crimeRate - 1, 1, 100);
+      safetyRating = clamp(safetyRating + 2, 0, 100);
+      budget -= 500;
+
+      addActivity(
+        "🚔 Additional patrols deployed",
+        "City-wide coverage increased • Just now"
+      );
+
+      showNotification("🚔 Patrol coverage increased.");
+
+      updateUI();
+    });
+
+
+    $("officerBtn").addEventListener("click", () => {
+
+      officers += 10;
+      available += 10;
+      response = clamp(response + 2, 0, 100);
+      responseTime = Math.max(2.0, responseTime - 0.2);
+      budget -= 1200;
+
+      addActivity(
+        "👮 New officers assigned",
+        "Department staffing increased • Just now"
+      );
+
+      showNotification("👮 10 officers added.");
+
+      updateUI();
+    });
+
+
+    $("stationBtn").addEventListener("click", () => {
+
+      stations += 1;
+      capacity = clamp(capacity + 8, 0, 100);
+      coverage = clamp(coverage + 3, 0, 100);
+      budget -= 5000;
+
+      addActivity(
+        "🏢 Police station upgraded",
+        "Station capacity increased • Just now"
+      );
+
+      showNotification("🏢 Police station upgraded.");
+
+      updateUI();
+    });
+
+
+    $("incidentBtn").addEventListener("click", () => {
+
+      incidents += 1;
+      calls += 1;
+
+      crimeRate = clamp(
+        crimeRate + (Math.random() > .5 ? 1 : 0),
+        1,
+        100
+      );
+
+      safetyRating = clamp(
+        safetyRating - 1,
+        0,
+        100
+      );
+
+      addActivity(
+        "🚨 Emergency incident simulated",
+        "Dispatch unit responding • Just now"
+      );
+
+      showNotification("🚨 Emergency response dispatched.");
+
+      updateUI();
+
+      setTimeout(() => {
+
+        if (incidents > 0) {
+          incidents--;
+          cases++;
+          resolved = clamp(resolved + 1, 0, 100);
+          safetyRating = clamp(safetyRating + 1, 0, 100);
+
+          addActivity(
+            "✅ Incident resolved",
+            "Response unit completed the call • Just now"
+          );
+
+          updateUI();
+        }
+
+      }, 3500);
+    });
+
+
+    $("refreshBtn").addEventListener("click", () => {
+
+      calls += Math.floor(Math.random() * 4);
+      cases += Math.floor(Math.random() * 5);
+
+      responseTime = clamp(
+        responseTime + (Math.random() * .4 - .2),
+        2,
+        8
+      );
+
+      showNotification("🔄 Police department refreshed.");
+
+      updateUI();
+    });
+
+
+    $("backBtn").addEventListener("click", () => {
+      window.location.href = "../index.html";
+    });
+
+
+    setInterval(() => {
+
+      calls += Math.floor(Math.random() * 2);
+
+      if (Math.random() > .6) {
+        cases++;
+      }
+
+      if (Math.random() > .7) {
+        crimeRate = clamp(
+          crimeRate + (Math.random() > .5 ? 1 : -1),
+          1,
+          30
+        );
+      }
+
+      responseTime = clamp(
+        responseTime + (Math.random() * .2 - .1),
+        2,
+        8
+      );
+
+      safetyRating = clamp(
+        100 - crimeRate * 1.1 + coverage * .15,
+        50,
+        99
+      );
+
+      updateUI();
+
+    }, 10000);
+
+
+    updateUI();
+
+  </script>
+
+</body>
+</html>
