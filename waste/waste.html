@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Waste Management | City Manager</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b1220;
+      --panel: #172033;
+      --panel-light: #202d43;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #ef4444;
+      --blue: #38bdf8;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .topbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 20px;
+      background: #080f1c;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: #26351f;
+      border: 1px solid #4d633e;
+      border-radius: 12px;
+      font-size: 25px;
+    }
+
+    .brand h1 {
+      font-size: 20px;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .back-btn {
+      padding: 10px 15px;
+      color: white;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: var(--panel-light);
+    }
+
+    .dashboard {
+      max-width: 1500px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .page-title {
+      margin-bottom: 18px;
+    }
+
+    .page-title h2 {
+      font-size: 23px;
+    }
+
+    .page-title p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-header span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card-icon {
+      font-size: 22px;
+    }
+
+    .card-value {
+      margin-top: 12px;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .card-status {
+      margin-top: 5px;
+      color: var(--green);
+      font-size: 11px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 18px;
+    }
+
+    .panel {
+      margin-bottom: 18px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .panel h3 {
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+
+    .progress-row {
+      margin-bottom: 17px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      font-size: 12px;
+    }
+
+    .progress-info span {
+      color: var(--muted);
+    }
+
+    .progress {
+      width: 100%;
+      height: 9px;
+      overflow: hidden;
+      background: #0f172a;
+      border-radius: 20px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: var(--green);
+      transition: width 0.4s;
+    }
+
+    .yellow {
+      background: var(--yellow);
+    }
+
+    .red {
+      background: var(--red);
+    }
+
+    .blue {
+      background: var(--blue);
+    }
+
+    .waste-map {
+      position: relative;
+      min-height: 380px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        #26352b;
+      background-size: 35px 35px;
+      border: 1px solid #405447;
+      border-radius: 10px;
+    }
+
+    .facility {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-size: 11px;
+      border-radius: 10px;
+    }
+
+    .landfill {
+      left: 25px;
+      top: 30px;
+      width: 125px;
+      height: 85px;
+      background: #3f3f46;
+      border: 2px solid #71717a;
+    }
+
+    .recycling {
+      right: 30px;
+      top: 30px;
+      width: 125px;
+      height: 85px;
+      background: #14532d;
+      border: 2px solid #4ade80;
+    }
+
+    .transfer {
+      left: 50%;
+      top: 125px;
+      width: 125px;
+      height: 70px;
+      transform: translateX(-50%);
+      background: #713f12;
+      border: 2px solid #facc15;
+    }
+
+    .waste-road {
+      position: absolute;
+      height: 5px;
+      background: #64748b;
+    }
+
+    .road-a {
+      left: 145px;
+      top: 70px;
+      width: 180px;
+    }
+
+    .road-b {
+      right: 145px;
+      top: 70px;
+      width: 180px;
+    }
+
+    .road-c {
+      left: 50%;
+      top: 185px;
+      width: 320px;
+      transform: translateX(-50%);
+    }
+
+    .road-d {
+      left: 50%;
+      top: 185px;
+      width: 5px;
+      height: 120px;
+      transform: translateX(-50%);
+      background: #64748b;
+    }
+
+    .district {
+      position: absolute;
+      width: 95px;
+      height: 55px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: #1e293b;
+      border: 1px solid #64748b;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    .district-a {
+      left: 45px;
+      bottom: 35px;
+    }
+
+    .district-b {
+      left: 50%;
+      bottom: 35px;
+      transform: translateX(-50%);
+    }
+
+    .district-c {
+      right: 45px;
+      bottom: 35px;
+    }
+
+    .truck {
+      position: absolute;
+      font-size: 22px;
+      animation: drive 7s linear infinite;
+    }
+
+    .truck-one {
+      top: 215px;
+      left: 15%;
+    }
+
+    .truck-two {
+      top: 260px;
+      left: 45%;
+      animation-delay: 2s;
+    }
+
+    .truck-three {
+      top: 315px;
+      left: 70%;
+      animation-delay: 4s;
+    }
+
+    @keyframes drive {
+      0% {
+        transform: translateX(-20px);
+      }
+
+      50% {
+        transform: translateX(45px);
+      }
+
+      100% {
+        transform: translateX(-20px);
+      }
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      background: var(--panel-light);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .stat-line span {
+      color: var(--muted);
+    }
+
+    .stat-line strong {
+      color: #bbf7d0;
+    }
+
+    .controls {
+      display: grid;
+      gap: 9px;
+    }
+
+    .control {
+      width: 100%;
+      padding: 11px;
+      color: white;
+      text-align: left;
+      background: var(--panel-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .control:hover {
+      background: #2b3a52;
+    }
+
+    .alert {
+      padding: 13px;
+      color: #bbf7d0;
+      background: #052e16;
+      border: 1px solid #166534;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .alert.warning {
+      color: #fef3c7;
+      background: #422006;
+      border-color: #92400e;
+    }
+
+    .alert.danger {
+      color: #fee2e2;
+      background: #450a0a;
+      border-color: #991b1b;
+    }
+
+    .online {
+      color: var(--green);
+    }
+
+    .footer-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 14px 18px;
+      color: var(--muted);
+      background: #101827;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .notification {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      max-width: 330px;
+      padding: 13px 16px;
+      color: white;
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(15px);
+      pointer-events: none;
+      transition: 0.25s;
+      z-index: 100;
+      font-size: 12px;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1000px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .dashboard {
+        padding: 12px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .waste-map {
+        min-height: 350px;
+      }
+
+      .road-a,
+      .road-b,
+      .road-c,
+      .road-d {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        🗑️
+      </div>
+
+      <div>
+        <h1>Waste Management</h1>
+        <span>City Manager Simulator</span>
+      </div>
+
+    </div>
+
+    <button
+      class="back-btn"
+      onclick="location.href='../index.html'">
+      ← Back to City
+    </button>
+
+  </header>
+
+
+  <main class="dashboard">
+
+    <div class="page-title">
+
+      <h2>🗑️ City Waste Management</h2>
+
+      <p>
+        Manage waste collection, recycling, processing and landfill capacity.
+      </p>
+
+    </div>
+
+
+    <section class="cards">
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Daily Waste</span>
+          <div class="card-icon">🗑️</div>
+        </div>
+
+        <div class="card-value">
+          <span id="dailyWaste">42,500</span> kg
+        </div>
+
+        <div class="card-status">
+          ● Waste monitoring active
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Collection</span>
+          <div class="card-icon">🚛</div>
+        </div>
+
+        <div class="card-value">
+          <span id="collection">94</span>%
+        </div>
+
+        <div class="card-status">
+          City collection coverage
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Recycling</span>
+          <div class="card-icon">♻️</div>
+        </div>
+
+        <div class="card-value">
+          <span id="recycling">38</span>%
+        </div>
+
+        <div class="card-status">
+          Waste being recycled
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Landfill</span>
+          <div class="card-icon">🏞️</div>
+        </div>
+
+        <div class="card-value">
+          <span id="landfill">61</span>%
+        </div>
+
+        <div class="card-status">
+          Available capacity used
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div class="layout">
+
+
+      <section>
+
+        <div class="panel">
+
+          <h3>📊 Waste System Performance</h3>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Collection Coverage</span>
+              <strong id="collectionText">94%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="collectionBar"
+                class="progress-fill"
+                style="width: 94%;">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Recycling Rate</span>
+              <strong id="recyclingText">38%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="recyclingBar"
+                class="progress-fill"
+                style="width: 38%;">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Landfill Capacity Used</span>
+              <strong id="landfillText">61%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="landfillBar"
+                class="progress-fill yellow"
+                style="width: 61%;">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Processing Efficiency</span>
+              <strong id="processingText">87%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="processingBar"
+                class="progress-fill"
+                style="width: 87%;">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>🗺️ Waste Collection Network</h3>
+
+          <div class="waste-map">
+
+            <div class="facility landfill">
+              🏞️<br>
+              City Landfill
+            </div>
+
+            <div class="facility recycling">
+              ♻️<br>
+              Recycling Center
+            </div>
+
+            <div class="facility transfer">
+              🏭<br>
+              Transfer Station
+            </div>
+
+            <div class="waste-road road-a"></div>
+            <div class="waste-road road-b"></div>
+            <div class="waste-road road-c"></div>
+            <div class="waste-road road-d"></div>
+
+            <div class="district district-a">
+              🏠<br>
+              North District
+            </div>
+
+            <div class="district district-b">
+              🏢<br>
+              Central District
+            </div>
+
+            <div class="district district-c">
+              🏭<br>
+              Industrial District
+            </div>
+
+            <div class="truck truck-one">
+              🚛
+            </div>
+
+            <div class="truck truck-two">
+              🚛
+            </div>
+
+            <div class="truck truck-three">
+              🚛
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>📋 Waste System Statistics</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>🗑️ Waste Generated</span>
+              <strong id="generatedStat">42,500 kg/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>🚛 Waste Collected</span>
+              <strong id="collectedStat">39,950 kg/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>♻️ Waste Recycled</span>
+              <strong id="recycledStat">16,150 kg/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>🏭 Waste Processed</span>
+              <strong id="processedStat">36,900 kg/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>🚛 Garbage Trucks</span>
+              <strong id="truckStat">28 / 32</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <aside>
+
+
+        <div class="panel">
+
+          <h3>⚙️ Waste Controls</h3>
+
+          <div class="controls">
+
+            <button
+              class="control"
+              onclick="increaseWaste()">
+              📈 Increase Waste Production
+            </button>
+
+            <button
+              class="control"
+              onclick="simulateOverflow()">
+              🗑️ Simulate Collection Overflow
+            </button>
+
+            <button
+              class="control"
+              onclick="repairCollection()">
+              🔧 Repair Collection Network
+            </button>
+
+            <button
+              class="control"
+              onclick="boostRecycling()">
+              ♻️ Improve Recycling
+            </button>
+
+            <button
+              class="control"
+              onclick="addTrucks()">
+              🚛 Add Garbage Trucks
+            </button>
+
+            <button
+              class="control"
+              onclick="refreshSystem()">
+              🔄 Refresh System
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>🚛 Collection Fleet</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>Fleet Status</span>
+              <strong class="online">ACTIVE</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Available Trucks</span>
+              <strong id="availableTrucks">28</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Routes Today</span>
+              <strong id="routes">126</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Average Collection</span>
+              <strong id="averageCollection">91%</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>♻️ Recycling Center</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>Facility Status</span>
+              <strong class="online">ONLINE</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Processing Capacity</span>
+              <strong>25,000 kg/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Current Load</span>
+              <strong id="recyclingLoad">72%</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Efficiency</span>
+              <strong id="recyclingEfficiency">87%</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>⚠️ Waste Status</h3>
+
+          <div
+            id="alert"
+            class="alert">
+
+            ♻️ Waste collection is operating normally. No major waste overflow detected.
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>📡 System Monitor</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>Collection Routes</span>
+              <strong>126</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Transfer Stations</span>
+              <strong>4 / 4</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Landfill Sites</span>
+              <strong>1 / 1</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Illegal Dumping</span>
+              <strong id="illegalDumping">2%</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+  <footer class="footer-status">
+
+    <span>
+      🗑️ Waste Management System
+    </span>
+
+    <span class="online">
+      ● SYSTEM ONLINE
+    </span>
+
+  </footer>
+
+
+  <div
+    id="notification"
+    class="notification">
+  </div>
+
+
+  <script>
+
+    let dailyWaste = 42500;
+    let collection = 94;
+    let recycling = 38;
+    let landfill = 61;
+    let processing = 87;
+
+    let trucks = 28;
+    let routes = 126;
+    let illegalDumping = 2;
+
+
+    const dailyWasteEl =
+      document.getElementById("dailyWaste");
+
+    const collectionEl =
+      document.getElementById("collection");
+
+    const recyclingEl =
+      document.getElementById("recycling");
+
+    const landfillEl =
+      document.getElementById("landfill");
+
+
+    const collectionText =
+      document.getElementById("collectionText");
+
+    const recyclingText =
+      document.getElementById("recyclingText");
+
+    const landfillText =
+      document.getElementById("landfillText");
+
+    const processingText =
+      document.getElementById("processingText");
+
+
+    const collectionBar =
+      document.getElementById("collectionBar");
+
+    const recyclingBar =
+      document.getElementById("recyclingBar");
+
+    const landfillBar =
+      document.getElementById("landfillBar");
+
+    const processingBar =
+      document.getElementById("processingBar");
+
+
+    const generatedStat =
+      document.getElementById("generatedStat");
+
+    const collectedStat =
+      document.getElementById("collectedStat");
+
+    const recycledStat =
+      document.getElementById("recycledStat");
+
+    const processedStat =
+      document.getElementById("processedStat");
+
+    const truckStat =
+      document.getElementById("truckStat");
+
+
+    const availableTrucks =
+      document.getElementById("availableTrucks");
+
+    const averageCollection =
+      document.getElementById("averageCollection");
+
+    const recyclingLoad =
+      document.getElementById("recyclingLoad");
+
+    const recyclingEfficiency =
+      document.getElementById("recyclingEfficiency");
+
+    const illegalDumpingEl =
+      document.getElementById("illegalDumping");
+
+    const alertEl =
+      document.getElementById("alert");
+
+    const notification =
+      document.getElementById("notification");
+
+
+    function clamp(value, min, max) {
+
+      return Math.max(
+        min,
+        Math.min(max, value)
+      );
+
+    }
+
+
+    function updateSystem() {
+
+      dailyWaste =
+        Math.round(
+          dailyWaste
+        );
+
+      collection =
+        clamp(
+          collection,
+          0,
+          100
+        );
+
+      recycling =
+        clamp(
+          recycling,
+          0,
+          100
+        );
+
+      landfill =
+        clamp(
+          landfill,
+          0,
+          100
+        );
+
+      processing =
+        clamp(
+          processing,
+          0,
+          100
+        );
+
+      trucks =
+        clamp(
+          trucks,
+          0,
+          50
+        );
+
+      illegalDumping =
+        clamp(
+          illegalDumping,
+          0,
+          20
+        );
+
+
+      const collected =
+        Math.round(
+          dailyWaste *
+          collection /
+          100
+        );
+
+
+      const recycled =
+        Math.round(
+          collected *
+          recycling /
+          100
+        );
+
+
+      const processed =
+        Math.round(
+          collected *
+          processing /
+          100
+        );
+
+
+      dailyWasteEl.textContent =
+        dailyWaste.toLocaleString();
+
+      collectionEl.textContent =
+        Math.round(collection);
+
+      recyclingEl.textContent =
+        Math.round(recycling);
+
+      landfillEl.textContent =
+        Math.round(landfill);
+
+
+      collectionText.textContent =
+        Math.round(collection) + "%";
+
+      recyclingText.textContent =
+        Math.round(recycling) + "%";
+
+      landfillText.textContent =
+        Math.round(landfill) + "%";
+
+      processingText.textContent =
+        Math.round(processing) + "%";
+
+
+      collectionBar.style.width =
+        collection + "%";
+
+      recyclingBar.style.width =
+        recycling + "%";
+
+      landfillBar.style.width =
+        landfill + "%";
+
+      processingBar.style.width =
+        processing + "%";
+
+
+      generatedStat.textContent =
+        dailyWaste.toLocaleString() +
+        " kg/day";
+
+      collectedStat.textContent =
+        collected.toLocaleString() +
+        " kg/day";
+
+      recycledStat.textContent =
+        recycled.toLocaleString() +
+        " kg/day";
+
+      processedStat.textContent =
+        processed.toLocaleString() +
+        " kg/day";
+
+
+      truckStat.textContent =
+        trucks + " / 32";
+
+      availableTrucks.textContent =
+        trucks;
+
+      averageCollection.textContent =
+        Math.round(collection) + "%";
+
+
+      const recyclingLoadValue =
+        clamp(
+          Math.round(
+            (recycled / 25000) * 100
+          ),
+          0,
+          100
+        );
+
+      recyclingLoad.textContent =
+        recyclingLoadValue + "%";
+
+      recyclingEfficiency.textContent =
+        Math.round(processing) + "%";
+
+      illegalDumpingEl.textContent =
+        illegalDumping.toFixed(1) + "%";
+
+
+      collectionBar.className =
+        "progress-fill " +
+        (
+          collection >= 85
+            ? ""
+            : collection >= 65
+              ? "yellow"
+              : "red"
+        );
+
+
+      recyclingBar.className =
+        "progress-fill " +
+        (
+          recycling >= 40
+            ? ""
+            : recycling >= 25
+              ? "yellow"
+              : "red"
+        );
+
+
+      landfillBar.className =
+        "progress-fill " +
+        (
+          landfill < 70
+            ? ""
+            : landfill < 90
+              ? "yellow"
+              : "red"
+        );
+
+
+      processingBar.className =
+        "progress-fill " +
+        (
+          processing >= 80
+            ? ""
+            : processing >= 60
+              ? "yellow"
+              : "red"
+        );
+
+
+      updateAlert();
+
+    }
+
+
+    function updateAlert() {
+
+      alertEl.className =
+        "alert";
+
+
+      if (
+        landfill >= 90 ||
+        collection < 60
+      ) {
+
+        alertEl.classList.add(
+          "danger"
+        );
+
+        alertEl.textContent =
+          "🚨 Critical waste management problem! Collection is insufficient or landfill capacity is nearly exhausted.";
+
+      } else if (
+        landfill >= 75 ||
+        collection < 80 ||
+        recycling < 25
+      ) {
+
+        alertEl.classList.add(
+          "warning"
+        );
+
+        alertEl.textContent =
+          "⚠️ Waste management needs attention. Improve collection or recycling before the situation gets worse.";
+
+      } else {
+
+        alertEl.textContent =
+          "♻️ Waste collection is operating normally. No major waste overflow detected.";
+
+      }
+
+    }
+
+
+    function showNotification(text) {
+
+      notification.textContent =
+        text;
+
+      notification.classList.add(
+        "show"
+      );
+
+      clearTimeout(
+        window.notificationTimer
+      );
+
+      window.notificationTimer =
+        setTimeout(function () {
+
+          notification.classList.remove(
+            "show"
+          );
+
+        }, 2500);
+
+    }
+
+
+    function increaseWaste() {
+
+      dailyWaste +=
+        Math.floor(
+          Math.random() * 4000
+        ) + 2500;
+
+      landfill +=
+        Math.random() * 3;
+
+      showNotification(
+        "📈 Daily waste production increased."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function simulateOverflow() {
+
+      collection -=
+        Math.floor(
+          Math.random() * 8
+        ) + 4;
+
+      landfill +=
+        Math.floor(
+          Math.random() * 7
+        ) + 4;
+
+      illegalDumping +=
+        Math.random() * 2;
+
+      showNotification(
+        "🗑️ Waste collection overflow detected!"
+      );
+
+      updateSystem();
+
+    }
+
+
+    function repairCollection() {
+
+      collection +=
+        Math.floor(
+          Math.random() * 8
+        ) + 5;
+
+      processing +=
+        Math.floor(
+          Math.random() * 6
+        ) + 3;
+
+      landfill -=
+        Math.floor(
+          Math.random() * 5
+        ) + 2;
+
+      illegalDumping -=
+        Math.random() * 2;
+
+      collection =
+        clamp(
+          collection,
+          0,
+          100
+        );
+
+      processing =
+        clamp(
+          processing,
+          0,
+          100
+        );
+
+      landfill =
+        Math.max(
+          0,
+          landfill
+        );
+
+      illegalDumping =
+        Math.max(
+          0,
+          illegalDumping
+        );
+
+      showNotification(
+        "🔧 Waste collection network repaired."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function boostRecycling() {
+
+      recycling +=
+        Math.floor(
+          Math.random() * 6
+        ) + 4;
+
+      processing +=
+        Math.floor(
+          Math.random() * 4
+        ) + 2;
+
+      landfill -=
+        Math.floor(
+          Math.random() * 4
+        ) + 2;
+
+      recycling =
+        clamp(
+          recycling,
+          0,
+          100
+        );
+
+      processing =
+        clamp(
+          processing,
+          0,
+          100
+        );
+
+      landfill =
+        Math.max(
+          0,
+          landfill
+        );
+
+      showNotification(
+        "♻️ Recycling program improved."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function addTrucks() {
+
+      if (trucks >= 32) {
+
+        showNotification(
+          "🚛 The city already has its full truck fleet."
+        );
+
+        return;
+
+      }
+
+      trucks +=
+        Math.floor(
+          Math.random() * 2
+        ) + 1;
+
+      collection += 2;
+
+      trucks =
+        Math.min(
+          32,
+          trucks
+        );
+
+      collection =
+        Math.min(
+          100,
+          collection
+        );
+
+      showNotification(
+        "🚛 Garbage trucks added to the fleet."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function refreshSystem() {
+
+      updateSystem();
+
+      showNotification(
+        "🔄 Waste management system refreshed."
+      );
+
+    }
+
+
+    function automaticUpdate() {
+
+      if (Math.random() < 0.55) {
+
+        dailyWaste +=
+          Math.floor(
+            Math.random() * 1000
+          ) - 200;
+
+      }
+
+
+      if (Math.random() < 0.35) {
+
+        landfill +=
+          Math.random() * 1.5;
+
+      }
+
+
+      if (Math.random() < 0.25) {
+
+        collection +=
+          Math.random() * 2 - 1;
+
+      }
+
+
+      if (Math.random() < 0.2) {
+
+        recycling +=
+          Math.random() * 1.5 - 0.5;
+
+      }
+
+
+      dailyWaste =
+        clamp(
+          dailyWaste,
+          15000,
+          100000
+        );
+
+      collection =
+        clamp(
+          collection,
+          50,
+          100
+        );
+
+      recycling =
+        clamp(
+          recycling,
+          10,
+          80
+        );
+
+      landfill =
+        clamp(
+          landfill,
+          0,
+          100
+        );
+
+      processing =
+        clamp(
+          processing,
+          50,
+          100
+        );
+
+
+      updateSystem();
+
+    }
+
+
+    setInterval(
+      automaticUpdate,
+      10000
+    );
+
+
+    updateSystem();
+
+  </script>
+
+</body>
+</html>
+```
