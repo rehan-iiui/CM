@@ -1,0 +1,1404 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Water Management | City Manager</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b1220;
+      --panel: #172033;
+      --panel-light: #202d43;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --cyan: #22d3ee;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --red: #ef4444;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .topbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 20px;
+      background: #080f1c;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: #082f49;
+      border: 1px solid #155e75;
+      border-radius: 12px;
+      font-size: 25px;
+    }
+
+    .brand h1 {
+      font-size: 20px;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .back-btn {
+      padding: 10px 15px;
+      color: white;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: var(--panel-light);
+    }
+
+    .dashboard {
+      padding: 20px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    .page-title {
+      margin-bottom: 18px;
+    }
+
+    .page-title h2 {
+      font-size: 23px;
+    }
+
+    .page-title p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-header span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card-icon {
+      font-size: 22px;
+    }
+
+    .card-value {
+      margin-top: 12px;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .card-status {
+      margin-top: 5px;
+      color: var(--green);
+      font-size: 11px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 18px;
+      margin-bottom: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .panel h3 {
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+
+    .progress-row {
+      margin-bottom: 17px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      font-size: 12px;
+    }
+
+    .progress-info span {
+      color: var(--muted);
+    }
+
+    .progress {
+      width: 100%;
+      height: 9px;
+      overflow: hidden;
+      background: #0f172a;
+      border-radius: 20px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: var(--blue);
+      transition: width 0.4s;
+    }
+
+    .green {
+      background: var(--green);
+    }
+
+    .yellow {
+      background: var(--yellow);
+    }
+
+    .red {
+      background: var(--red);
+    }
+
+    .water-map {
+      position: relative;
+      min-height: 360px;
+      overflow: hidden;
+      padding: 20px;
+      background:
+        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        #0c2638;
+      background-size: 35px 35px;
+      border: 1px solid #164e63;
+      border-radius: 10px;
+    }
+
+    .reservoir {
+      position: absolute;
+      left: 25px;
+      top: 35px;
+      width: 115px;
+      height: 80px;
+      display: grid;
+      place-items: center;
+      background: #075985;
+      border: 3px solid #38bdf8;
+      border-radius: 45% 45% 35% 35%;
+      font-size: 13px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+    }
+
+    .plant {
+      position: absolute;
+      right: 35px;
+      top: 35px;
+      width: 125px;
+      height: 80px;
+      display: grid;
+      place-items: center;
+      background: #334155;
+      border: 2px solid #64748b;
+      border-radius: 10px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .pipe {
+      position: absolute;
+      height: 6px;
+      background: #38bdf8;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+    }
+
+    .pipe.one {
+      left: 135px;
+      top: 72px;
+      width: 155px;
+    }
+
+    .pipe.two {
+      left: 285px;
+      top: 72px;
+      width: 125px;
+    }
+
+    .pipe.three {
+      left: 405px;
+      top: 72px;
+      width: 150px;
+    }
+
+    .pipe.vertical {
+      width: 6px;
+      height: 210px;
+      left: 400px;
+      top: 72px;
+    }
+
+    .city-node {
+      position: absolute;
+      width: 78px;
+      height: 55px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: #1e3a5f;
+      border: 1px solid #38bdf8;
+      border-radius: 8px;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .node-a {
+      left: 80px;
+      bottom: 40px;
+    }
+
+    .node-b {
+      left: 260px;
+      bottom: 40px;
+    }
+
+    .node-c {
+      right: 90px;
+      bottom: 40px;
+    }
+
+    .stats-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      background: var(--panel-light);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .stat-line span {
+      color: var(--muted);
+    }
+
+    .stat-line strong {
+      color: #bae6fd;
+    }
+
+    .controls {
+      display: grid;
+      gap: 9px;
+    }
+
+    .control {
+      width: 100%;
+      padding: 11px;
+      color: white;
+      background: var(--panel-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .control:hover {
+      background: #2b3a52;
+    }
+
+    .alert {
+      padding: 13px;
+      color: #bae6fd;
+      background: #082f49;
+      border: 1px solid #155e75;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .alert.warning {
+      color: #fef3c7;
+      background: #422006;
+      border-color: #92400e;
+    }
+
+    .alert.danger {
+      color: #fee2e2;
+      background: #450a0a;
+      border-color: #991b1b;
+    }
+
+    .footer-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 14px 18px;
+      color: var(--muted);
+      background: #101827;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .online {
+      color: var(--green);
+    }
+
+    .notification {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      max-width: 320px;
+      padding: 13px 16px;
+      color: white;
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(15px);
+      pointer-events: none;
+      transition: 0.25s;
+      z-index: 100;
+      font-size: 12px;
+    }
+
+    .notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1000px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard {
+        padding: 12px;
+      }
+
+      .water-map {
+        min-height: 330px;
+      }
+
+      .pipe.one,
+      .pipe.two,
+      .pipe.three {
+        display: none;
+      }
+
+      .pipe.vertical {
+        left: 50%;
+      }
+
+      .node-a {
+        left: 20px;
+      }
+
+      .node-b {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .node-c {
+        right: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        💧
+      </div>
+
+      <div>
+        <h1>Water Management</h1>
+        <span>City Manager Simulator</span>
+      </div>
+
+    </div>
+
+    <button class="back-btn" onclick="location.href='../index.html'">
+      ← Back to City
+    </button>
+
+  </header>
+
+
+  <main class="dashboard">
+
+    <div class="page-title">
+
+      <h2>💧 City Water System</h2>
+
+      <p>
+        Monitor water production, storage, treatment and distribution across the city.
+      </p>
+
+    </div>
+
+
+    <section class="cards">
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Water Production</span>
+          <div class="card-icon">💧</div>
+        </div>
+
+        <div class="card-value">
+          <span id="production">82,000</span> L
+        </div>
+
+        <div class="card-status">
+          ● Production online
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>City Demand</span>
+          <div class="card-icon">🏙️</div>
+        </div>
+
+        <div class="card-value">
+          <span id="demand">64,000</span> L
+        </div>
+
+        <div class="card-status">
+          Daily consumption
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Reservoir</span>
+          <div class="card-icon">🏞️</div>
+        </div>
+
+        <div class="card-value">
+          <span id="reservoir">76</span>%
+        </div>
+
+        <div class="card-status">
+          Storage available
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-header">
+          <span>Coverage</span>
+          <div class="card-icon">🌐</div>
+        </div>
+
+        <div class="card-value">
+          <span id="coverage">96</span>%
+        </div>
+
+        <div class="card-status">
+          City network coverage
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <div class="layout">
+
+
+      <section>
+
+        <div class="panel">
+
+          <h3>📊 Water System Performance</h3>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Water Supply</span>
+              <strong id="supplyText">96%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="supplyBar"
+                class="progress-fill green"
+                style="width: 96%;">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Reservoir Level</span>
+              <strong id="reservoirText">76%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="reservoirBar"
+                class="progress-fill"
+                style="width: 76%;">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Network Condition</span>
+              <strong id="networkText">91%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="networkBar"
+                class="progress-fill green"
+                style="width: 91%;">
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="progress-row">
+
+            <div class="progress-info">
+              <span>Water Treatment</span>
+              <strong id="treatmentText">94%</strong>
+            </div>
+
+            <div class="progress">
+              <div
+                id="treatmentBar"
+                class="progress-fill green"
+                style="width: 94%;">
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>🗺️ Water Distribution Network</h3>
+
+          <div class="water-map">
+
+            <div class="reservoir">
+              🏞️<br>
+              Main Reservoir
+            </div>
+
+            <div class="plant">
+              🏭<br>
+              Treatment Plant
+            </div>
+
+            <div class="pipe one"></div>
+            <div class="pipe two"></div>
+            <div class="pipe three"></div>
+            <div class="pipe vertical"></div>
+
+            <div class="city-node node-a">
+              🏠<br>
+              North District
+            </div>
+
+            <div class="city-node node-b">
+              🏢<br>
+              Central District
+            </div>
+
+            <div class="city-node node-c">
+              🏭<br>
+              Industrial Area
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>📋 Water Network Statistics</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>💧 Water Produced</span>
+              <strong id="producedStat">82,000 L/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>🏙️ Water Used</span>
+              <strong id="usedStat">64,000 L/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>💦 Water Lost to Leaks</span>
+              <strong id="leakStat">4%</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>🏭 Treatment Capacity</span>
+              <strong>100,000 L/day</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>🚰 Active Water Connections</span>
+              <strong>8,420</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <aside>
+
+
+        <div class="panel">
+
+          <h3>⚙️ Water Controls</h3>
+
+          <div class="controls">
+
+            <button class="control" onclick="increaseDemand()">
+              📈 Increase Water Demand
+            </button>
+
+            <button class="control" onclick="simulateLeak()">
+              💦 Simulate Network Leak
+            </button>
+
+            <button class="control" onclick="repairNetwork()">
+              🔧 Repair Water Network
+            </button>
+
+            <button class="control" onclick="fillReservoir()">
+              🏞️ Increase Reservoir Supply
+            </button>
+
+            <button class="control" onclick="refreshSystem()">
+              🔄 Refresh System
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>🏭 Treatment Plant</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>Plant Status</span>
+              <strong class="online">ONLINE</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Capacity</span>
+              <strong>100,000 L</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Current Output</span>
+              <strong id="plantOutput">82%</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Water Quality</span>
+              <strong id="quality">Excellent</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>⚠️ System Status</h3>
+
+          <div
+            id="alert"
+            class="alert"
+          >
+            💧 Water supply is stable. The city currently has enough water for its demand.
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <h3>📡 Network Monitor</h3>
+
+          <div class="stats-list">
+
+            <div class="stat-line">
+              <span>Pressure</span>
+              <strong id="pressure">92%</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Leaks</span>
+              <strong id="leaks">4%</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Active Pumps</span>
+              <strong>14 / 16</strong>
+            </div>
+
+            <div class="stat-line">
+              <span>Water Towers</span>
+              <strong>7 / 7</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+  <footer class="footer-status">
+
+    <span>
+      💧 Water Management System
+    </span>
+
+    <span class="online">
+      ● SYSTEM ONLINE
+    </span>
+
+  </footer>
+
+
+  <div
+    id="notification"
+    class="notification">
+  </div>
+
+
+  <script>
+
+    let production = 82000;
+    let demand = 64000;
+    let reservoir = 76;
+    let coverage = 96;
+    let network = 91;
+    let treatment = 94;
+    let leaks = 4;
+    let pressure = 92;
+
+
+    const productionEl =
+      document.getElementById("production");
+
+    const demandEl =
+      document.getElementById("demand");
+
+    const reservoirEl =
+      document.getElementById("reservoir");
+
+    const coverageEl =
+      document.getElementById("coverage");
+
+    const supplyText =
+      document.getElementById("supplyText");
+
+    const reservoirText =
+      document.getElementById("reservoirText");
+
+    const networkText =
+      document.getElementById("networkText");
+
+    const treatmentText =
+      document.getElementById("treatmentText");
+
+    const supplyBar =
+      document.getElementById("supplyBar");
+
+    const reservoirBar =
+      document.getElementById("reservoirBar");
+
+    const networkBar =
+      document.getElementById("networkBar");
+
+    const treatmentBar =
+      document.getElementById("treatmentBar");
+
+    const producedStat =
+      document.getElementById("producedStat");
+
+    const usedStat =
+      document.getElementById("usedStat");
+
+    const leakStat =
+      document.getElementById("leakStat");
+
+    const plantOutput =
+      document.getElementById("plantOutput");
+
+    const quality =
+      document.getElementById("quality");
+
+    const pressureEl =
+      document.getElementById("pressure");
+
+    const leaksEl =
+      document.getElementById("leaks");
+
+    const alertEl =
+      document.getElementById("alert");
+
+    const notification =
+      document.getElementById("notification");
+
+
+    function clamp(value, min, max) {
+
+      return Math.max(
+        min,
+        Math.min(max, value)
+      );
+
+    }
+
+
+    function updateSystem() {
+
+      production =
+        Math.round(
+          production
+        );
+
+      demand =
+        Math.round(
+          demand
+        );
+
+      reservoir =
+        clamp(
+          reservoir,
+          0,
+          100
+        );
+
+      coverage =
+        clamp(
+          coverage,
+          0,
+          100
+        );
+
+      network =
+        clamp(
+          network,
+          0,
+          100
+        );
+
+      treatment =
+        clamp(
+          treatment,
+          0,
+          100
+        );
+
+      leaks =
+        clamp(
+          leaks,
+          0,
+          30
+        );
+
+      pressure =
+        clamp(
+          100 - leaks * 2,
+          40,
+          100
+        );
+
+
+      const effectiveSupply =
+        production -
+        Math.round(
+          production * leaks / 100
+        );
+
+      let supply =
+        Math.round(
+          (effectiveSupply / demand) * 100
+        );
+
+      supply =
+        clamp(
+          supply,
+          0,
+          100
+        );
+
+
+      productionEl.textContent =
+        production.toLocaleString();
+
+      demandEl.textContent =
+        demand.toLocaleString();
+
+      reservoirEl.textContent =
+        Math.round(reservoir);
+
+      coverageEl.textContent =
+        Math.round(coverage);
+
+
+      supplyText.textContent =
+        supply + "%";
+
+      reservoirText.textContent =
+        Math.round(reservoir) + "%";
+
+      networkText.textContent =
+        Math.round(network) + "%";
+
+      treatmentText.textContent =
+        Math.round(treatment) + "%";
+
+
+      supplyBar.style.width =
+        supply + "%";
+
+      reservoirBar.style.width =
+        reservoir + "%";
+
+      networkBar.style.width =
+        network + "%";
+
+      treatmentBar.style.width =
+        treatment + "%";
+
+
+      producedStat.textContent =
+        production.toLocaleString() +
+        " L/day";
+
+      usedStat.textContent =
+        demand.toLocaleString() +
+        " L/day";
+
+      leakStat.textContent =
+        leaks.toFixed(1) + "%";
+
+      plantOutput.textContent =
+        Math.round(
+          (production / 100000) * 100
+        ) + "%";
+
+
+      pressureEl.textContent =
+        Math.round(pressure) + "%";
+
+      leaksEl.textContent =
+        leaks.toFixed(1) + "%";
+
+
+      if (treatment >= 90) {
+
+        quality.textContent =
+          "Excellent";
+
+      } else if (treatment >= 75) {
+
+        quality.textContent =
+          "Good";
+
+      } else {
+
+        quality.textContent =
+          "Needs Attention";
+
+      }
+
+
+      supplyBar.className =
+        "progress-fill " +
+        (
+          supply >= 85
+            ? "green"
+            : supply >= 65
+              ? "yellow"
+              : "red"
+        );
+
+
+      reservoirBar.className =
+        "progress-fill " +
+        (
+          reservoir >= 50
+            ? "green"
+            : reservoir >= 25
+              ? "yellow"
+              : "red"
+        );
+
+
+      networkBar.className =
+        "progress-fill " +
+        (
+          network >= 75
+            ? "green"
+            : network >= 50
+              ? "yellow"
+              : "red"
+        );
+
+
+      updateAlert(supply);
+
+    }
+
+
+    function updateAlert(supply) {
+
+      alertEl.className =
+        "alert";
+
+
+      if (supply < 60) {
+
+        alertEl.classList.add(
+          "danger"
+        );
+
+        alertEl.textContent =
+          "🚨 Critical water shortage! Production is far below city demand.";
+
+      } else if (
+        reservoir < 25 ||
+        leaks > 15
+      ) {
+
+        alertEl.classList.add(
+          "warning"
+        );
+
+        alertEl.textContent =
+          "⚠️ Water system needs attention. Reservoir levels or network losses are becoming dangerous.";
+
+      } else {
+
+        alertEl.textContent =
+          "💧 Water supply is stable. The city currently has enough water for its demand.";
+
+      }
+
+    }
+
+
+    function showNotification(text) {
+
+      notification.textContent =
+        text;
+
+      notification.classList.add(
+        "show"
+      );
+
+      clearTimeout(
+        window.notificationTimer
+      );
+
+      window.notificationTimer =
+        setTimeout(function () {
+
+          notification.classList.remove(
+            "show"
+          );
+
+        }, 2500);
+
+    }
+
+
+    function increaseDemand() {
+
+      demand +=
+        Math.floor(
+          Math.random() * 5000
+        ) + 3000;
+
+      showNotification(
+        "📈 City water demand increased."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function simulateLeak() {
+
+      leaks +=
+        Math.floor(
+          Math.random() * 5
+        ) + 3;
+
+      network -=
+        Math.floor(
+          Math.random() * 8
+        ) + 3;
+
+      coverage -=
+        Math.floor(
+          Math.random() * 5
+        ) + 2;
+
+      showNotification(
+        "💦 A water network leak has been detected!"
+      );
+
+      updateSystem();
+
+    }
+
+
+    function repairNetwork() {
+
+      leaks -=
+        Math.floor(
+          Math.random() * 5
+        ) + 3;
+
+      network +=
+        Math.floor(
+          Math.random() * 8
+        ) + 4;
+
+      coverage +=
+        Math.floor(
+          Math.random() * 5
+        ) + 2;
+
+      leaks =
+        Math.max(
+          2,
+          leaks
+        );
+
+      showNotification(
+        "🔧 Water network repairs completed."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function fillReservoir() {
+
+      reservoir +=
+        Math.floor(
+          Math.random() * 10
+        ) + 5;
+
+      reservoir =
+        Math.min(
+          100,
+          reservoir
+        );
+
+      showNotification(
+        "🏞️ Reservoir supply increased."
+      );
+
+      updateSystem();
+
+    }
+
+
+    function refreshSystem() {
+
+      updateSystem();
+
+      showNotification(
+        "🔄 Water system refreshed."
+      );
+
+    }
+
+
+    function automaticUpdate() {
+
+      if (Math.random() < 0.5) {
+
+        demand +=
+          Math.floor(
+            Math.random() * 1200
+          );
+
+      }
+
+
+      if (Math.random() < 0.4) {
+
+        reservoir -=
+          Math.random() * 2;
+
+      }
+
+
+      if (Math.random() < 0.25) {
+
+        production +=
+          Math.floor(
+            Math.random() * 1200
+          ) - 500;
+
+      }
+
+
+      production =
+        clamp(
+          production,
+          50000,
+          100000
+        );
+
+      reservoir =
+        clamp(
+          reservoir,
+          0,
+          100
+        );
+
+
+      updateSystem();
+
+    }
+
+
+    setInterval(
+      automaticUpdate,
+      10000
+    );
+
+
+    updateSystem();
+
+  </script>
+
+</body>
+</html>
+```
