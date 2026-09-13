@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire Department - City Manager Simulator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0b1220;
+  --panel: #172033;
+  --panel2: #202d43;
+  --border: #334155;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --orange: #fb923c;
+  --red: #ef4444;
+  --yellow: #facc15;
+  --green: #4ade80;
+  --blue: #38bdf8;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.topbar {
+  min-height: 76px;
+  padding: 14px 24px;
+  background: #111a2b;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: #572018;
+  font-size: 25px;
+}
+
+.brand h1 {
+  font-size: 21px;
+}
+
+.brand span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.top-actions button {
+  padding: 10px 15px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.top-actions button:hover {
+  background: var(--panel2);
+}
+
+.dashboard {
+  max-width: 1500px;
+  margin: auto;
+  padding: 22px;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.title h2 {
+  font-size: 25px;
+  margin-bottom: 5px;
+}
+
+.title p {
+  color: var(--muted);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card,
+.panel,
+.bottom-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.card {
+  padding: 18px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.card small {
+  color: var(--muted);
+}
+
+.card-icon {
+  font-size: 22px;
+}
+
+.card strong {
+  font-size: 25px;
+}
+
+.green { color: var(--green); }
+.red { color: var(--red); }
+.yellow { color: var(--yellow); }
+.orange { color: var(--orange); }
+.blue { color: var(--blue); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 18px;
+}
+
+.panel {
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.panel h3 {
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+.city-map {
+  position: relative;
+  height: 390px;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(90deg, transparent 48%, #334155 48%, #334155 51%, transparent 51%),
+    linear-gradient(0deg, transparent 47%, #334155 47%, #334155 51%, transparent 51%),
+    #16283a;
+}
+
+.city-map::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 28%;
+  height: 8px;
+  background: #293e50;
+}
+
+.city-map::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 67%;
+  width: 8px;
+  background: #293e50;
+}
+
+.district {
+  position: absolute;
+  border: 1px dashed #64748b;
+  border-radius: 10px;
+  padding: 6px;
+  color: #cbd5e1;
+  font-size: 11px;
+  background: rgba(15, 23, 42, .35);
+}
+
+.d1 {
+  width: 31%;
+  height: 35%;
+  left: 5%;
+  top: 7%;
+}
+
+.d2 {
+  width: 28%;
+  height: 36%;
+  right: 5%;
+  top: 7%;
+}
+
+.d3 {
+  width: 31%;
+  height: 37%;
+  left: 5%;
+  bottom: 7%;
+}
+
+.d4 {
+  width: 28%;
+  height: 37%;
+  right: 5%;
+  bottom: 7%;
+}
+
+.station {
+  position: absolute;
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #dc2626;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  box-shadow: 0 0 0 6px rgba(239,68,68,.12);
+}
+
+.s1 {
+  left: 40%;
+  top: 18%;
+}
+
+.s2 {
+  left: 17%;
+  bottom: 18%;
+}
+
+.s3 {
+  right: 15%;
+  bottom: 19%;
+}
+
+.truck {
+  position: absolute;
+  z-index: 4;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--orange);
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  animation: move 3s infinite alternate ease-in-out;
+}
+
+.t1 {
+  left: 28%;
+  top: 38%;
+}
+
+.t2 {
+  right: 28%;
+  top: 48%;
+  animation-delay: .7s;
+}
+
+.t3 {
+  left: 48%;
+  bottom: 17%;
+  animation-delay: 1.2s;
+}
+
+@keyframes move {
+  from {
+    transform: translate(0,0);
+  }
+  to {
+    transform: translate(17px,-11px);
+  }
+}
+
+.legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.station-dot {
+  background: var(--red);
+}
+
+.truck-dot {
+  background: var(--orange);
+}
+
+.progress-row {
+  margin-bottom: 17px;
+}
+
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.progress-head span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.progress-head strong {
+  font-size: 14px;
+}
+
+.progress {
+  height: 9px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.progress div {
+  height: 100%;
+  border-radius: 20px;
+  transition: width .4s;
+}
+
+.orange-bar { background: var(--orange); }
+.green-bar { background: var(--green); }
+.red-bar { background: var(--red); }
+.blue-bar { background: var(--blue); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+}
+
+.stat {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 19px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+}
+
+.control {
+  text-align: left;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #1e293b;
+  color: var(--text);
+}
+
+.control:hover {
+  background: #27364c;
+}
+
+.control span {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.control small {
+  color: var(--muted);
+}
+
+.alert {
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #2d2112;
+  border: 1px solid #76501c;
+  color: #fde68a;
+}
+
+.activity {
+  padding: 12px;
+  background: var(--panel2);
+  border-left: 4px solid var(--orange);
+  border-radius: 9px;
+  margin-bottom: 10px;
+}
+
+.activity:last-child {
+  margin-bottom: 0;
+}
+
+.activity strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.activity span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.bottom {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 15px;
+}
+
+.bottom-box {
+  padding: 15px;
+}
+
+.bottom-box span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.bottom-box strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.notification {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  background: #1e293b;
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  border-radius: 10px;
+  box-shadow: 0 15px 35px rgba(0,0,0,.35);
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: .25s;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width:1100px) {
+  .cards {
+    grid-template-columns: repeat(3,1fr);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width:700px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-actions {
+    width: 100%;
+  }
+
+  .top-actions button {
+    flex: 1;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .bottom {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+@media (max-width:480px) {
+  .dashboard {
+    padding: 12px;
+  }
+
+  .cards,
+  .stats,
+  .controls,
+  .bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .city-map {
+    height: 320px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="brand">
+    <div class="logo">🚒</div>
+    <div>
+      <h1>Fire Department</h1>
+      <span>City Manager Simulator • Emergency Services</span>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <button id="refreshBtn">🔄 Refresh</button>
+    <button id="backBtn">← Back to City</button>
+  </div>
+
+</header>
+
+
+<main class="dashboard">
+
+  <div class="title">
+    <h2>🚒 City Fire & Rescue Operations</h2>
+    <p>Manage fire stations, emergency response and city fire safety.</p>
+  </div>
+
+
+  <section class="cards">
+
+    <div class="card">
+      <div class="card-top">
+        <small>Firefighters</small>
+        <span class="card-icon">👨‍🚒</span>
+      </div>
+      <strong id="firefighters">124</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Fire Stations</small>
+        <span class="card-icon">🏢</span>
+      </div>
+      <strong id="stations">3</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Fire Risk</small>
+        <span class="card-icon">🔥</span>
+      </div>
+      <strong class="green" id="fireRisk">9%</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Response Time</small>
+        <span class="card-icon">⏱️</span>
+      </div>
+      <strong class="blue" id="responseTime">4.8 min</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Safety Coverage</small>
+        <span class="card-icon">🧯</span>
+      </div>
+      <strong class="green" id="coverage">94%</strong>
+    </div>
+
+  </section>
+
+
+  <div class="grid">
+
+    <section>
+
+      <div class="panel">
+
+        <h3>🗺️ Fire & Rescue Coverage Map</h3>
+
+        <div class="city-map">
+
+          <div class="district d1">District A</div>
+          <div class="district d2">District B</div>
+          <div class="district d3">District C</div>
+          <div class="district d4">District D</div>
+
+          <div class="station s1">🚒</div>
+          <div class="station s2">🚒</div>
+          <div class="station s3">🚒</div>
+
+          <div class="truck t1">🚒</div>
+          <div class="truck t2">🚒</div>
+          <div class="truck t3">🚒</div>
+
+        </div>
+
+        <div class="legend">
+          <span>
+            <i class="dot station-dot"></i>
+            Fire Station
+          </span>
+
+          <span>
+            <i class="dot truck-dot"></i>
+            Fire Engine
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>📊 Department Performance</h3>
+
+        <div class="progress-row">
+          <div class="progress-head">
+            <span>Fire Coverage</span>
+            <strong id="coverageText">94%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="coverageBar"
+              class="green-bar"
+              style="width:94%">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="progress-row">
+          <div class="progress-head">
+            <span>Emergency Response</span>
+            <strong id="responseText">91%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="responseBar"
+              class="blue-bar"
+              style="width:91%">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="progress-row">
+          <div class="progress-head">
+            <span>Station Capacity</span>
+            <strong id="capacityText">79%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="capacityBar"
+              class="orange-bar"
+              style="width:79%">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="progress-row">
+          <div class="progress-head">
+            <span>Fire Prevention</span>
+            <strong id="preventionText">88%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="preventionBar"
+              class="green-bar"
+              style="width:88%">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section>
+
+      <div class="panel">
+
+        <h3>📌 Department Statistics</h3>
+
+        <div class="stats">
+
+          <div class="stat">
+            <span>🚒 Fire Engines</span>
+            <strong id="engines">27</strong>
+          </div>
+
+          <div class="stat">
+            <span>🚑 Rescue Vehicles</span>
+            <strong id="rescue">8</strong>
+          </div>
+
+          <div class="stat">
+            <span>📞 Emergency Calls</span>
+            <strong id="calls">19</strong>
+          </div>
+
+          <div class="stat">
+            <span>🔥 Active Incidents</span>
+            <strong id="incidents">1</strong>
+          </div>
+
+          <div class="stat">
+            <span>👨‍🚒 Available Staff</span>
+            <strong id="available">86</strong>
+          </div>
+
+          <div class="stat">
+            <span>🧯 Inspections</span>
+            <strong id="inspections">64</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>⚙️ Fire Department Controls</h3>
+
+        <div class="controls">
+
+          <button class="control" id="dispatchBtn">
+            <span>🚒</span>
+            Dispatch Engine
+            <small>Respond to emergency</small>
+          </button>
+
+          <button class="control" id="staffBtn">
+            <span>👨‍🚒</span>
+            Add Firefighters
+            <small>Increase department staff</small>
+          </button>
+
+          <button class="control" id="stationBtn">
+            <span>🏢</span>
+            Upgrade Station
+            <small>Increase capacity</small>
+          </button>
+
+          <button class="control" id="incidentBtn">
+            <span>🔥</span>
+            Simulate Fire
+            <small>Test emergency response</small>
+          </button>
+
+        </div>
+
+        <div class="alert" id="alert">
+          🟢 Fire services are operating normally across the city.
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>🕒 Recent Fire Department Activity</h3>
+
+        <div id="activityList">
+
+          <div class="activity">
+            <strong>🚒 Routine patrol completed</strong>
+            <span>District A • 4 minutes ago</span>
+          </div>
+
+          <div class="activity">
+            <strong>🧯 Building safety inspection completed</strong>
+            <span>District B • 11 minutes ago</span>
+          </div>
+
+          <div class="activity">
+            <strong>🚑 Rescue vehicle returned</strong>
+            <span>Central Station • 18 minutes ago</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <section class="bottom">
+
+    <div class="bottom-box">
+      <span>📅 Daily Fire Budget</span>
+      <strong id="budget">$15,800</strong>
+    </div>
+
+    <div class="bottom-box">
+      <span>🚒 Active Engines</span>
+      <strong id="activeEngines">12</strong>
+    </div>
+
+    <div class="bottom-box">
+      <span>🧯 Prevention Score</span>
+      <strong id="preventionScore">88%</strong>
+    </div>
+
+    <div class="bottom-box">
+      <span>⭐ Department Rating</span>
+      <strong id="rating">4.7 / 5</strong>
+    </div>
+
+  </section>
+
+</main>
+
+
+<div class="notification" id="notification"></div>
+
+
+<script>
+
+let firefighters = 124;
+let stations = 3;
+let fireRisk = 9;
+let responseTime = 4.8;
+let coverage = 94;
+
+let response = 91;
+let capacity = 79;
+let prevention = 88;
+
+let engines = 27;
+let rescue = 8;
+let calls = 19;
+let incidents = 1;
+let available = 86;
+let inspections = 64;
+
+let activeEngines = 12;
+let budget = 15800;
+
+
+const $ = id => document.getElementById(id);
+
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+
+function notify(message) {
+
+  const box = $("notification");
+
+  box.textContent = message;
+  box.classList.add("show");
+
+  setTimeout(() => {
+    box.classList.remove("show");
+  }, 2500);
+}
+
+
+function addActivity(title, detail) {
+
+  const list = $("activityList");
+
+  const item = document.createElement("div");
+
+  item.className = "activity";
+
+  item.innerHTML = `
+    <strong>${title}</strong>
+    <span>${detail}</span>
+  `;
+
+  list.prepend(item);
+
+  while (list.children.length > 5) {
+    list.removeChild(list.lastChild);
+  }
+}
+
+
+function updateAlert() {
+
+  const alert = $("alert");
+
+  if (incidents >= 5) {
+
+    alert.textContent =
+      "🔴 Several emergencies are active. More engines should be dispatched.";
+
+    alert.style.background = "#35171b";
+    alert.style.borderColor = "#7f1d1d";
+    alert.style.color = "#fecaca";
+
+  } else if (fireRisk >= 18) {
+
+    alert.textContent =
+      "🟡 Fire risk is elevated. Increase prevention and station coverage.";
+
+    alert.style.background = "#332b12";
+    alert.style.borderColor = "#6b5a16";
+    alert.style.color = "#fef08a";
+
+  } else {
+
+    alert.textContent =
+      "🟢 Fire services are operating normally across the city.";
+
+    alert.style.background = "#132a23";
+    alert.style.borderColor = "#245b46";
+    alert.style.color = "#bbf7d0";
+  }
+}
+
+
+function updateUI() {
+
+  $("firefighters").textContent = firefighters;
+  $("stations").textContent = stations;
+
+  $("fireRisk").textContent = fireRisk + "%";
+  $("responseTime").textContent =
+    responseTime.toFixed(1) + " min";
+
+  $("coverage").textContent = coverage + "%";
+
+  $("coverageText").textContent = coverage + "%";
+  $("responseText").textContent = response + "%";
+  $("capacityText").textContent = capacity + "%";
+  $("preventionText").textContent = prevention + "%";
+
+  $("coverageBar").style.width = coverage + "%";
+  $("responseBar").style.width = response + "%";
+  $("capacityBar").style.width = capacity + "%";
+  $("preventionBar").style.width = prevention + "%";
+
+  $("engines").textContent = engines;
+  $("rescue").textContent = rescue;
+  $("calls").textContent = calls;
+  $("incidents").textContent = incidents;
+  $("available").textContent = available;
+  $("inspections").textContent = inspections;
+
+  $("activeEngines").textContent = activeEngines;
+  $("preventionScore").textContent = prevention + "%";
+  $("budget").textContent =
+    "$" + budget.toLocaleString();
+
+  $("fireRisk").className =
+    fireRisk <= 10 ? "green" :
+    fireRisk <= 18 ? "yellow" :
+    "red";
+
+  $("coverage").className =
+    coverage >= 80 ? "green" :
+    coverage >= 60 ? "yellow" :
+    "red";
+
+  updateAlert();
+}
+
+
+$("dispatchBtn").addEventListener("click", () => {
+
+  if (engines <= 0) {
+    notify("No fire engines available.");
+    return;
+  }
+
+  activeEngines++;
+  engines--;
+  incidents = Math.max(0, incidents - 1);
+  calls++;
+
+  response = clamp(response + 2, 0, 100);
+  responseTime = Math.max(2.2, responseTime - 0.2);
+
+  budget -= 450;
+
+  addActivity(
+    "🚒 Fire engine dispatched",
+    "Emergency response unit sent • Just now"
+  );
+
+  notify("🚒 Engine dispatched.");
+
+  updateUI();
+
+
+  setTimeout(() => {
+
+    engines++;
+    activeEngines = Math.max(0, activeEngines - 1);
+
+    addActivity(
+      "✅ Emergency response completed",
+      "Fire engine returned to station • Just now"
+    );
+
+    updateUI();
+
+  }, 3500);
+});
+
+
+$("staffBtn").addEventListener("click", () => {
+
+  firefighters += 8;
+  available += 8;
+
+  response = clamp(response + 2, 0, 100);
+  responseTime = Math.max(2, responseTime - 0.15);
+
+  budget -= 1000;
+
+  addActivity(
+    "👨‍🚒 Firefighters added",
+    "Department staffing increased • Just now"
+  );
+
+  notify("👨‍🚒 8 firefighters added.");
+
+  updateUI();
+});
+
+
+$("stationBtn").addEventListener("click", () => {
+
+  stations++;
+  capacity = clamp(capacity + 8, 0, 100);
+  coverage = clamp(coverage + 3, 0, 100);
+
+  budget -= 4500;
+
+  addActivity(
+    "🏢 Fire station upgraded",
+    "Station capacity increased • Just now"
+  );
+
+  notify("🏢 Fire station upgraded.");
+
+  updateUI();
+});
+
+
+$("incidentBtn").addEventListener("click", () => {
+
+  incidents++;
+  calls++;
+
+  fireRisk = clamp(
+    fireRisk + (Math.random() > .5 ? 1 : 2),
+    1,
+    40
+  );
+
+  coverage = clamp(coverage - 1, 0, 100);
+
+  addActivity(
+    "🔥 Fire emergency simulated",
+    "Fire & rescue unit responding • Just now"
+  );
+
+  notify("🔥 Emergency response activated.");
+
+  updateUI();
+
+
+  setTimeout(() => {
+
+    if (incidents > 0) {
+
+      incidents--;
+
+      fireRisk = clamp(fireRisk - 1, 1, 40);
+      coverage = clamp(coverage + 1, 0, 100);
+      prevention = clamp(prevention + 1, 0, 100);
+
+      addActivity(
+        "🟢 Emergency resolved",
+        "Fire & rescue operation completed • Just now"
+      );
+
+      updateUI();
+    }
+
+  }, 4000);
+});
+
+
+$("refreshBtn").addEventListener("click", () => {
+
+  calls += Math.floor(Math.random() * 3);
+
+  inspections += Math.floor(Math.random() * 4);
+
+  responseTime = clamp(
+    responseTime + (Math.random() * .4 - .2),
+    2,
+    8
+  );
+
+  notify("🔄 Fire department refreshed.");
+
+  updateUI();
+});
+
+
+$("backBtn").addEventListener("click", () => {
+  window.location.href = "../index.html";
+});
+
+
+setInterval(() => {
+
+  calls += Math.floor(Math.random() * 2);
+
+  if (Math.random() > .65) {
+    inspections++;
+  }
+
+  if (Math.random() > .7) {
+
+    fireRisk = clamp(
+      fireRisk + (Math.random() > .5 ? 1 : -1),
+      2,
+      30
+    );
+  }
+
+  responseTime = clamp(
+    responseTime + (Math.random() * .2 - .1),
+    2,
+    8
+  );
+
+  updateUI();
+
+}, 10000);
+
+
+updateUI();
+
+</script>
+
+</body>
+</html>
