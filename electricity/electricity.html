@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Electricity Management</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #0b1220;
+      color: #f8fafc;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .header {
+      height: 70px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 24px;
+
+      background: #111827;
+
+      border-bottom:
+        1px solid #334155;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+      place-items: center;
+
+      background: #172554;
+
+      border-radius: 10px;
+
+      font-size: 24px;
+    }
+
+    h1 {
+      font-size: 19px;
+    }
+
+    .subtitle {
+      margin-top: 3px;
+
+      color: #94a3b8;
+
+      font-size: 12px;
+    }
+
+    .back {
+      padding: 9px 14px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .back:hover {
+      background: #334155;
+    }
+
+    .layout {
+      display: grid;
+
+      grid-template-columns:
+        280px 1fr;
+
+      min-height:
+        calc(100vh - 70px);
+    }
+
+    .sidebar {
+      padding: 18px;
+
+      background: #101827;
+
+      border-right:
+        1px solid #334155;
+    }
+
+    .panel {
+      padding: 15px;
+
+      margin-bottom: 15px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+
+      font-size: 14px;
+    }
+
+    .power-box {
+      text-align: center;
+    }
+
+    .power-number {
+      margin: 8px 0;
+
+      font-size: 36px;
+
+      font-weight: bold;
+
+      color: #facc15;
+    }
+
+    .power-label {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .info {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 9px 0;
+
+      border-bottom:
+        1px solid #29364a;
+
+      font-size: 12px;
+    }
+
+    .info:last-child {
+      border-bottom: none;
+    }
+
+    .info strong {
+      color: #7dd3fc;
+    }
+
+    .green {
+      color: #4ade80 !important;
+    }
+
+    .yellow {
+      color: #facc15 !important;
+    }
+
+    .red {
+      color: #f87171 !important;
+    }
+
+    .main {
+      padding: 22px;
+
+      background: #0f172a;
+
+      overflow-y: auto;
+    }
+
+    .dashboard {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 16px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .card-title {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .card-value {
+      margin-top: 8px;
+
+      font-size: 24px;
+
+      font-weight: bold;
+    }
+
+    .section {
+      padding: 18px;
+
+      margin-bottom: 18px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+
+      font-size: 15px;
+    }
+
+    .power-bar-box {
+      margin-bottom: 16px;
+    }
+
+    .power-bar-header {
+      display: flex;
+
+      justify-content: space-between;
+
+      margin-bottom: 8px;
+
+      font-size: 12px;
+    }
+
+    .power-bar-header strong {
+      color: #facc15;
+    }
+
+    .progress {
+      height: 14px;
+
+      overflow: hidden;
+
+      background: #273449;
+
+      border-radius: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+
+      width: 0;
+
+      border-radius: 20px;
+
+      transition:
+        width 0.5s ease;
+    }
+
+    .yellow-bar {
+      background: #facc15;
+    }
+
+    .green-bar {
+      background: #22c55e;
+    }
+
+    .red-bar {
+      background: #ef4444;
+    }
+
+    .blue-bar {
+      background: #38bdf8;
+    }
+
+    .plants {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .plant {
+      padding: 15px;
+
+      background: #111827;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 9px;
+    }
+
+    .plant-icon {
+      font-size: 27px;
+
+      margin-bottom: 8px;
+    }
+
+    .plant-name {
+      font-size: 13px;
+
+      font-weight: bold;
+    }
+
+    .plant-type {
+      margin-top: 3px;
+
+      color: #94a3b8;
+
+      font-size: 10px;
+    }
+
+    .plant-power {
+      margin-top: 12px;
+
+      color: #facc15;
+
+      font-size: 18px;
+
+      font-weight: bold;
+    }
+
+    .plant-status {
+      margin-top: 5px;
+
+      color: #4ade80;
+
+      font-size: 10px;
+    }
+
+    .grid-map {
+      min-height: 350px;
+
+      position: relative;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          rgba(255,255,255,0.025) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.025) 1px,
+          transparent 1px
+        ),
+        #111827;
+
+      background-size:
+        35px 35px;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 10px;
+    }
+
+    .power-line {
+      position: absolute;
+
+      height: 3px;
+
+      background: #facc15;
+
+      opacity: 0.7;
+
+      box-shadow:
+        0 0 7px rgba(250,204,21,0.5);
+    }
+
+    .line-1 {
+      left: 15%;
+      top: 28%;
+
+      width: 70%;
+    }
+
+    .line-2 {
+      left: 25%;
+      top: 58%;
+
+      width: 60%;
+
+      transform: rotate(-8deg);
+    }
+
+    .line-3 {
+      left: 35%;
+      top: 15%;
+
+      width: 3px;
+      height: 70%;
+    }
+
+    .substation {
+      position: absolute;
+
+      width: 54px;
+      height: 54px;
+
+      display: grid;
+      place-items: center;
+
+      background: #1e293b;
+
+      border:
+        2px solid #facc15;
+
+      border-radius: 9px;
+
+      font-size: 25px;
+
+      box-shadow:
+        0 0 12px rgba(250,204,21,0.25);
+    }
+
+    .station-1 {
+      left: 12%;
+      top: 20%;
+    }
+
+    .station-2 {
+      right: 13%;
+      top: 48%;
+    }
+
+    .station-3 {
+      left: 45%;
+      bottom: 12%;
+    }
+
+    .building {
+      position: absolute;
+
+      padding: 6px 8px;
+
+      background:
+        rgba(15,23,42,0.9);
+
+      border:
+        1px solid #334155;
+
+      border-radius: 6px;
+
+      font-size: 18px;
+    }
+
+    .building-1 {
+      left: 25%;
+      top: 18%;
+    }
+
+    .building-2 {
+      left: 56%;
+      top: 36%;
+    }
+
+    .building-3 {
+      right: 18%;
+      bottom: 18%;
+    }
+
+    .outage {
+      padding: 13px 15px;
+
+      background: #0f2a1b;
+
+      border:
+        1px solid #166534;
+
+      border-radius: 8px;
+
+      color: #d1fae5;
+
+      font-size: 12px;
+    }
+
+    .warning {
+      background: #2a210d;
+
+      border-color: #854d0e;
+
+      color: #fef3c7;
+    }
+
+    .danger {
+      background: #2a1111;
+
+      border-color: #991b1b;
+
+      color: #fee2e2;
+    }
+
+    .actions {
+      display: flex;
+
+      gap: 9px;
+
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 10px 14px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: #334155;
+    }
+
+    @media (max-width: 1050px) {
+
+      .dashboard {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .plants {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media (max-width: 850px) {
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+
+        border-bottom:
+          1px solid #334155;
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .header {
+        padding: 0 12px;
+      }
+
+      .main {
+        padding: 12px;
+      }
+
+      .dashboard,
+      .plants {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <div class="title">
+
+      <div class="icon">
+        ⚡
+      </div>
+
+      <div>
+
+        <h1>
+          Electricity Management
+        </h1>
+
+        <div class="subtitle">
+          City Manager Simulator
+        </div>
+
+      </div>
+
+    </div>
+
+    <button
+      class="back"
+      onclick="goBack()"
+    >
+      ← City
+    </button>
+
+  </header>
+
+
+  <div class="layout">
+
+
+    <aside class="sidebar">
+
+
+      <div class="panel power-box">
+
+        <h2>
+          ⚡ Power Status
+        </h2>
+
+        <div
+          id="powerStatus"
+          class="power-number"
+        >
+          92%
+        </div>
+
+        <div class="power-label">
+          CITY POWER COVERAGE
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          📊 Electricity Statistics
+        </h2>
+
+        <div class="info">
+          <span>Production</span>
+
+          <strong id="production">
+            850 MW
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Demand</span>
+
+          <strong id="demand">
+            720 MW
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Available</span>
+
+          <strong
+            id="available"
+            class="green"
+          >
+            130 MW
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Power Loss</span>
+
+          <strong
+            id="loss"
+            class="yellow"
+          >
+            5%
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          🏭 Power Plants
+        </h2>
+
+        <div class="info">
+          <span>Coal Plant</span>
+
+          <strong>
+            400 MW
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Gas Plant</span>
+
+          <strong>
+            300 MW
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Solar Farm</span>
+
+          <strong>
+            150 MW
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          🔌 Grid Status
+        </h2>
+
+        <div class="info">
+          <span>Grid Health</span>
+
+          <strong
+            id="gridHealth"
+            class="green"
+          >
+            96%
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Substations</span>
+
+          <strong>
+            3
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Outages</span>
+
+          <strong
+            id="outages"
+            class="green"
+          >
+            0
+          </strong>
+        </div>
+
+      </div>
+
+
+    </aside>
+
+
+    <main class="main">
+
+
+      <div class="dashboard">
+
+
+        <div class="card">
+
+          <div class="card-title">
+            POWER PRODUCTION
+          </div>
+
+          <div
+            id="productionCard"
+            class="card-value"
+          >
+            850 MW
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            CITY DEMAND
+          </div>
+
+          <div
+            id="demandCard"
+            class="card-value"
+          >
+            720 MW
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            RESERVE POWER
+          </div>
+
+          <div
+            id="reserveCard"
+            class="card-value green"
+          >
+            130 MW
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            GRID HEALTH
+          </div>
+
+          <div
+            id="gridCard"
+            class="card-value green"
+          >
+            96%
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <section class="section">
+
+        <h2>
+          ⚡ Power Balance
+        </h2>
+
+
+        <div class="power-bar-box">
+
+          <div class="power-bar-header">
+
+            <span>
+              Production
+            </span>
+
+            <strong id="productionPercent">
+              100%
+            </strong>
+
+          </div>
+
+          <div class="progress">
+
+            <div
+              id="productionBar"
+              class="progress-bar yellow-bar"
+              style="width:100%;"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="power-bar-box">
+
+          <div class="power-bar-header">
+
+            <span>
+              Demand
+            </span>
+
+            <strong id="demandPercent">
+              85%
+            </strong>
+
+          </div>
+
+          <div class="progress">
+
+            <div
+              id="demandBar"
+              class="progress-bar green-bar"
+              style="width:85%;"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="power-bar-box">
+
+          <div class="power-bar-header">
+
+            <span>
+              Reserve
+            </span>
+
+            <strong id="reservePercent">
+              15%
+            </strong>
+
+          </div>
+
+          <div class="progress">
+
+            <div
+              id="reserveBar"
+              class="progress-bar blue-bar"
+              style="width:15%;"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          🏭 Power Plants
+        </h2>
+
+
+        <div class="plants">
+
+
+          <div class="plant">
+
+            <div class="plant-icon">
+              🏭
+            </div>
+
+            <div class="plant-name">
+              Central Coal Plant
+            </div>
+
+            <div class="plant-type">
+              Coal Power
+            </div>
+
+            <div
+              class="plant-power"
+              id="coalPower"
+            >
+              400 MW
+            </div>
+
+            <div class="plant-status">
+              ● ONLINE
+            </div>
+
+          </div>
+
+
+          <div class="plant">
+
+            <div class="plant-icon">
+              🔥
+            </div>
+
+            <div class="plant-name">
+              North Gas Plant
+            </div>
+
+            <div class="plant-type">
+              Natural Gas
+            </div>
+
+            <div
+              class="plant-power"
+              id="gasPower"
+            >
+              300 MW
+            </div>
+
+            <div class="plant-status">
+              ● ONLINE
+            </div>
+
+          </div>
+
+
+          <div class="plant">
+
+            <div class="plant-icon">
+              ☀️
+            </div>
+
+            <div class="plant-name">
+              Solar Farm
+            </div>
+
+            <div class="plant-type">
+              Renewable Energy
+            </div>
+
+            <div
+              class="plant-power"
+              id="solarPower"
+            >
+              150 MW
+            </div>
+
+            <div class="plant-status">
+              ● ONLINE
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          🔌 Electricity Grid
+        </h2>
+
+
+        <div class="grid-map">
+
+          <div class="power-line line-1"></div>
+
+          <div class="power-line line-2"></div>
+
+          <div class="power-line line-3"></div>
+
+
+          <div class="substation station-1">
+            ⚡
+          </div>
+
+          <div class="substation station-2">
+            ⚡
+          </div>
+
+          <div class="substation station-3">
+            ⚡
+          </div>
+
+
+          <div class="building building-1">
+            🏠
+          </div>
+
+          <div class="building building-2">
+            🏢
+          </div>
+
+          <div class="building building-3">
+            🏭
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          🚨 Grid Status
+        </h2>
+
+        <div
+          id="gridAlert"
+          class="outage"
+        >
+          ⚡ The electricity grid is operating normally with sufficient reserve power.
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          ⚙️ Electricity Controls
+        </h2>
+
+        <div class="actions">
+
+          <button
+            class="action-btn"
+            onclick="simulateDemand()"
+          >
+            📈 Increase Demand
+          </button>
+
+          <button
+            class="action-btn"
+            onclick="simulateOutage()"
+          >
+            🚨 Simulate Outage
+          </button>
+
+          <button
+            class="action-btn"
+            onclick="restoreGrid()"
+          >
+            🔧 Restore Grid
+          </button>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+
+  <script>
+
+    let production = 850;
+
+    let demand = 720;
+
+    let gridHealth = 96;
+
+    let outages = 0;
+
+    let coalPower = 400;
+
+    let gasPower = 300;
+
+    let solarPower = 150;
+
+
+    const powerStatusEl =
+      document.getElementById(
+        "powerStatus"
+      );
+
+    const productionEl =
+      document.getElementById(
+        "production"
+      );
+
+    const demandEl =
+      document.getElementById(
+        "demand"
+      );
+
+    const availableEl =
+      document.getElementById(
+        "available"
+      );
+
+    const lossEl =
+      document.getElementById(
+        "loss"
+      );
+
+    const gridHealthEl =
+      document.getElementById(
+        "gridHealth"
+      );
+
+    const outagesEl =
+      document.getElementById(
+        "outages"
+      );
+
+    const productionCardEl =
+      document.getElementById(
+        "productionCard"
+      );
+
+    const demandCardEl =
+      document.getElementById(
+        "demandCard"
+      );
+
+    const reserveCardEl =
+      document.getElementById(
+        "reserveCard"
+      );
+
+    const gridCardEl =
+      document.getElementById(
+        "gridCard"
+      );
+
+
+    function updateElectricity() {
+
+      const available =
+        Math.max(
+          0,
+          production - demand
+        );
+
+
+      const powerCoverage =
+        demand <= production
+          ? Math.min(
+              100,
+              Math.round(
+                (production /
+                Math.max(
+                  1,
+                  demand
+                )) *
+                100
+              )
+            )
+          : Math.round(
+              (production /
+              demand) *
+              100
+            );
+
+
+      const demandPercent =
+        Math.min(
+          100,
+          Math.round(
+            (demand /
+            Math.max(
+              1,
+              production
+            )) *
+            100
+          )
+        );
+
+
+      const reservePercent =
+        Math.max(
+          0,
+          100 - demandPercent
+        );
+
+
+      const loss =
+        Math.max(
+          2,
+          Math.round(
+            8 -
+            gridHealth / 20
+          )
+        );
+
+
+      powerStatusEl.textContent =
+        Math.min(
+          100,
+          powerCoverage
+        ) + "%";
+
+
+      productionEl.textContent =
+        production + " MW";
+
+      demandEl.textContent =
+        demand + " MW";
+
+      availableEl.textContent =
+        available + " MW";
+
+
+      lossEl.textContent =
+        loss + "%";
+
+
+      gridHealthEl.textContent =
+        gridHealth + "%";
+
+
+      outagesEl.textContent =
+        outages;
+
+
+      productionCardEl.textContent =
+        production + " MW";
+
+      demandCardEl.textContent =
+        demand + " MW";
+
+      reserveCardEl.textContent =
+        available + " MW";
+
+      gridCardEl.textContent =
+        gridHealth + "%";
+
+
+      document.getElementById(
+        "productionPercent"
+      ).textContent =
+        "100%";
+
+
+      document.getElementById(
+        "demandPercent"
+      ).textContent =
+        demandPercent + "%";
+
+
+      document.getElementById(
+        "reservePercent"
+      ).textContent =
+        reservePercent + "%";
+
+
+      document.getElementById(
+        "productionBar"
+      ).style.width =
+        "100%";
+
+
+      document.getElementById(
+        "demandBar"
+      ).style.width =
+        demandPercent + "%";
+
+
+      document.getElementById(
+        "reserveBar"
+      ).style.width =
+        reservePercent + "%";
+
+
+      document.getElementById(
+        "coalPower"
+      ).textContent =
+        coalPower + " MW";
+
+      document.getElementById(
+        "gasPower"
+      ).textContent =
+        gasPower + " MW";
+
+      document.getElementById(
+        "solarPower"
+      ).textContent =
+        solarPower + " MW";
+
+
+      updateColors(
+        available
+      );
+
+    }
+
+
+    function updateColors(
+      available
+    ) {
+
+      if (
+        available > 100 &&
+        outages === 0
+      ) {
+
+        powerStatusEl.className =
+          "power-number";
+
+        availableEl.className =
+          "green";
+
+        gridHealthEl.className =
+          "green";
+
+        gridCardEl.className =
+          "card-value green";
+
+      }
+
+      else if (
+        available > 0
+      ) {
+
+        powerStatusEl.className =
+          "power-number yellow";
+
+        availableEl.className =
+          "yellow";
+
+        gridHealthEl.className =
+          "yellow";
+
+        gridCardEl.className =
+          "card-value yellow";
+
+      }
+
+      else {
+
+        powerStatusEl.className =
+          "power-number red";
+
+        availableEl.className =
+          "red";
+
+        gridHealthEl.className =
+          "red";
+
+        gridCardEl.className =
+          "card-value red";
+
+      }
+
+
+      updateAlert(
+        available
+      );
+
+    }
+
+
+    function updateAlert(
+      available
+    ) {
+
+      const alert =
+        document.getElementById(
+          "gridAlert"
+        );
+
+
+      if (outages > 0) {
+
+        alert.className =
+          "outage danger";
+
+        alert.textContent =
+          "🚨 " +
+          outages +
+          " electricity outage(s) are currently affecting the city.";
+
+        return;
+
+      }
+
+
+      if (available <= 0) {
+
+        alert.className =
+          "outage danger";
+
+        alert.textContent =
+          "⚠️ Electricity demand is higher than production. Power shortages are occurring.";
+
+        return;
+
+      }
+
+
+      if (available < 100) {
+
+        alert.className =
+          "outage warning";
+
+        alert.textContent =
+          "⚠️ Power reserves are low. Consider increasing electricity production.";
+
+        return;
+
+      }
+
+
+      alert.className =
+        "outage";
+
+      alert.textContent =
+        "⚡ The electricity grid is operating normally with sufficient reserve power.";
+
+    }
+
+
+    function simulateDemand() {
+
+      demand +=
+        Math.floor(
+          20 +
+          Math.random() * 60
+        );
+
+
+      demand =
+        Math.min(
+          1200,
+          demand
+        );
+
+
+      updateElectricity();
+
+    }
+
+
+    function simulateOutage() {
+
+      if (outages >= 3) {
+
+        return;
+
+      }
+
+
+      outages++;
+
+
+      gridHealth =
+        Math.max(
+          30,
+          gridHealth - 12
+        );
+
+
+      production =
+        Math.max(
+          300,
+          production - 100
+        );
+
+
+      updateElectricity();
+
+    }
+
+
+    function restoreGrid() {
+
+      if (outages <= 0) {
+
+        gridHealth =
+          Math.min(
+            100,
+            gridHealth + 2
+          );
+
+        updateElectricity();
+
+        return;
+
+      }
+
+
+      outages--;
+
+
+      gridHealth =
+        Math.min(
+          100,
+          gridHealth + 12
+        );
+
+
+      production =
+        Math.min(
+          850,
+          production + 100
+        );
+
+
+      updateElectricity();
+
+    }
+
+
+    function automaticGridUpdate() {
+
+      const change =
+        Math.floor(
+          -25 +
+          Math.random() * 51
+        );
+
+
+      demand =
+        Math.max(
+          500,
+          Math.min(
+            1000,
+            demand + change
+          )
+        );
+
+
+      if (
+        outages === 0 &&
+        Math.random() < 0.08
+      ) {
+
+        outages = 1;
+
+        gridHealth =
+          Math.max(
+            50,
+            gridHealth - 8
+          );
+
+        production =
+          Math.max(
+            500,
+            production - 100
+          );
+
+      }
+
+
+      if (
+        outages > 0 &&
+        Math.random() < 0.25
+      ) {
+
+        restoreGrid();
+
+        return;
+
+      }
+
+
+      updateElectricity();
+
+    }
+
+
+    function goBack() {
+
+      window.location.href =
+        "../index.html";
+
+    }
+
+
+    updateElectricity();
+
+
+    setInterval(
+      automaticGridUpdate,
+      10000
+    );
+
+  </script>
+
+</body>
+
+</html>
