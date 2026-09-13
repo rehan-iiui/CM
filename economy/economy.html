@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Economy Management</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #0b1220;
+      color: #f8fafc;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .header {
+      height: 70px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 24px;
+
+      background: #111827;
+
+      border-bottom:
+        1px solid #334155;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+      place-items: center;
+
+      background: #172554;
+
+      border-radius: 10px;
+
+      font-size: 24px;
+    }
+
+    h1 {
+      font-size: 19px;
+    }
+
+    .subtitle {
+      margin-top: 3px;
+
+      color: #94a3b8;
+
+      font-size: 12px;
+    }
+
+    .back {
+      padding: 9px 14px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .back:hover {
+      background: #334155;
+    }
+
+    .layout {
+      display: grid;
+
+      grid-template-columns:
+        280px 1fr;
+
+      min-height:
+        calc(100vh - 70px);
+    }
+
+    .sidebar {
+      padding: 18px;
+
+      background: #101827;
+
+      border-right:
+        1px solid #334155;
+    }
+
+    .panel {
+      padding: 15px;
+
+      margin-bottom: 15px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+
+      font-size: 14px;
+    }
+
+    .money-box {
+      text-align: center;
+    }
+
+    .money-number {
+      margin: 8px 0;
+
+      font-size: 34px;
+
+      font-weight: bold;
+
+      color: #4ade80;
+    }
+
+    .money-label {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .info {
+      display: flex;
+
+      justify-content: space-between;
+
+      padding: 9px 0;
+
+      border-bottom:
+        1px solid #29364a;
+
+      font-size: 12px;
+    }
+
+    .info:last-child {
+      border-bottom: none;
+    }
+
+    .info strong {
+      color: #7dd3fc;
+    }
+
+    .green {
+      color: #4ade80 !important;
+    }
+
+    .yellow {
+      color: #facc15 !important;
+    }
+
+    .red {
+      color: #f87171 !important;
+    }
+
+    .main {
+      padding: 22px;
+
+      background: #0f172a;
+
+      overflow-y: auto;
+    }
+
+    .dashboard {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 16px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .card-title {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .card-value {
+      margin-top: 8px;
+
+      font-size: 24px;
+
+      font-weight: bold;
+    }
+
+    .section {
+      padding: 18px;
+
+      margin-bottom: 18px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+
+      font-size: 15px;
+    }
+
+    .finance-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 12px;
+    }
+
+    .finance-item {
+      padding: 14px;
+
+      background: #111827;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 9px;
+    }
+
+    .finance-top {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      margin-bottom: 8px;
+
+      font-size: 12px;
+    }
+
+    .finance-top strong {
+      font-size: 15px;
+    }
+
+    .progress {
+      height: 9px;
+
+      overflow: hidden;
+
+      background: #273449;
+
+      border-radius: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+
+      width: 0;
+
+      border-radius: 20px;
+
+      transition:
+        width 0.5s ease;
+    }
+
+    .green-bar {
+      background: #22c55e;
+    }
+
+    .blue-bar {
+      background: #38bdf8;
+    }
+
+    .yellow-bar {
+      background: #facc15;
+    }
+
+    .red-bar {
+      background: #ef4444;
+    }
+
+    .tax-control {
+      display: grid;
+
+      grid-template-columns:
+        1fr 100px;
+
+      gap: 14px;
+
+      align-items: center;
+
+      margin-bottom: 15px;
+    }
+
+    .tax-control:last-child {
+      margin-bottom: 0;
+    }
+
+    .tax-info h3 {
+      margin-bottom: 4px;
+
+      font-size: 13px;
+    }
+
+    .tax-info p {
+      color: #94a3b8;
+
+      font-size: 10px;
+    }
+
+    .tax-input {
+      width: 100%;
+
+      padding: 9px;
+
+      color: white;
+
+      background: #0f172a;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 7px;
+
+      outline: none;
+
+      text-align: center;
+    }
+
+    .tax-input:focus {
+      border-color: #38bdf8;
+    }
+
+    .economic-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .economic-card {
+      padding: 15px;
+
+      text-align: center;
+
+      background: #111827;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 9px;
+    }
+
+    .economic-icon {
+      font-size: 27px;
+
+      margin-bottom: 7px;
+    }
+
+    .economic-label {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .economic-value {
+      margin-top: 6px;
+
+      font-size: 21px;
+
+      font-weight: bold;
+    }
+
+    .alert {
+      padding: 13px 15px;
+
+      background: #0f2a1b;
+
+      border:
+        1px solid #166534;
+
+      border-radius: 8px;
+
+      color: #d1fae5;
+
+      font-size: 12px;
+    }
+
+    .warning {
+      background: #2a210d;
+
+      border-color: #854d0e;
+
+      color: #fef3c7;
+    }
+
+    .danger {
+      background: #2a1111;
+
+      border-color: #991b1b;
+
+      color: #fee2e2;
+    }
+
+    .action-buttons {
+      display: flex;
+
+      gap: 9px;
+
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 10px 14px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: #334155;
+    }
+
+    .transaction-list {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 8px;
+    }
+
+    .transaction {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 11px 13px;
+
+      background: #111827;
+
+      border:
+        1px solid #29364a;
+
+      border-radius: 7px;
+
+      font-size: 12px;
+    }
+
+    .transaction span:first-child {
+      color: #cbd5e1;
+    }
+
+    .income {
+      color: #4ade80;
+    }
+
+    .expense {
+      color: #f87171;
+    }
+
+    @media (max-width: 1050px) {
+
+      .dashboard {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .economic-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media (max-width: 850px) {
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+
+        border-bottom:
+          1px solid #334155;
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .header {
+        padding: 0 12px;
+      }
+
+      .main {
+        padding: 12px;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .finance-grid,
+      .economic-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tax-control {
+        grid-template-columns:
+          1fr 85px;
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <div class="title">
+
+      <div class="icon">
+        💰
+      </div>
+
+      <div>
+
+        <h1>
+          Economy Management
+        </h1>
+
+        <div class="subtitle">
+          City Manager Simulator
+        </div>
+
+      </div>
+
+    </div>
+
+    <button
+      class="back"
+      onclick="goBack()"
+    >
+      ← City
+    </button>
+
+  </header>
+
+
+  <div class="layout">
+
+
+    <aside class="sidebar">
+
+
+      <div class="panel money-box">
+
+        <h2>
+          🏦 City Treasury
+        </h2>
+
+        <div
+          id="treasury"
+          class="money-number"
+        >
+          $50,000
+        </div>
+
+        <div class="money-label">
+          AVAILABLE CITY FUNDS
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          📊 Financial Summary
+        </h2>
+
+        <div class="info">
+          <span>Daily Income</span>
+
+          <strong
+            id="dailyIncome"
+            class="green"
+          >
+            $1,240
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Daily Expenses</span>
+
+          <strong
+            id="dailyExpenses"
+            class="red"
+          >
+            $620
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Daily Profit</span>
+
+          <strong
+            id="dailyProfit"
+            class="green"
+          >
+            +$620
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Tax Revenue</span>
+
+          <strong id="taxRevenue">
+            $760
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          📈 Economy Health
+        </h2>
+
+        <div class="info">
+          <span>Economic Growth</span>
+
+          <strong
+            id="growth"
+            class="green"
+          >
+            4.8%
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Business Health</span>
+
+          <strong
+            id="businessHealth"
+            class="green"
+          >
+            86%
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Employment</span>
+
+          <strong
+            id="employment"
+            class="green"
+          >
+            88%
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          💵 Tax Rate
+        </h2>
+
+        <div class="info">
+          <span>Current Rate</span>
+
+          <strong id="taxRate">
+            10%
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Estimated Revenue</span>
+
+          <strong id="estimatedTax">
+            $760
+          </strong>
+        </div>
+
+      </div>
+
+
+    </aside>
+
+
+    <main class="main">
+
+
+      <div class="dashboard">
+
+
+        <div class="card">
+
+          <div class="card-title">
+            CITY TREASURY
+          </div>
+
+          <div
+            id="treasuryCard"
+            class="card-value green"
+          >
+            $50,000
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            DAILY REVENUE
+          </div>
+
+          <div
+            id="revenueCard"
+            class="card-value green"
+          >
+            $1,240
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            DAILY EXPENSES
+          </div>
+
+          <div
+            id="expenseCard"
+            class="card-value red"
+          >
+            $620
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            NET PROFIT
+          </div>
+
+          <div
+            id="profitCard"
+            class="card-value green"
+          >
+            +$620
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <section class="section">
+
+        <h2>
+          💵 City Finances
+        </h2>
+
+
+        <div class="finance-grid">
+
+
+          <div class="finance-item">
+
+            <div class="finance-top">
+
+              <span>
+                🏠 Property Taxes
+              </span>
+
+              <strong
+                id="propertyTaxValue"
+                class="green"
+              >
+                $420
+              </strong>
+
+            </div>
+
+            <div class="progress">
+
+              <div
+                id="propertyTaxBar"
+                class="progress-bar green-bar"
+                style="width: 55%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="finance-item">
+
+            <div class="finance-top">
+
+              <span>
+                🏢 Business Taxes
+              </span>
+
+              <strong
+                id="businessTaxValue"
+                class="green"
+              >
+                $340
+              </strong>
+
+            </div>
+
+            <div class="progress">
+
+              <div
+                id="businessTaxBar"
+                class="progress-bar blue-bar"
+                style="width: 45%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="finance-item">
+
+            <div class="finance-top">
+
+              <span>
+                🛣️ Infrastructure
+              </span>
+
+              <strong
+                id="roadsExpense"
+                class="red"
+              >
+                -$180
+              </strong>
+
+            </div>
+
+            <div class="progress">
+
+              <div
+                id="roadsBar"
+                class="progress-bar yellow-bar"
+                style="width: 29%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="finance-item">
+
+            <div class="finance-top">
+
+              <span>
+                🏥 Public Services
+              </span>
+
+              <strong
+                id="servicesExpense"
+                class="red"
+              >
+                -$260
+              </strong>
+
+            </div>
+
+            <div class="progress">
+
+              <div
+                id="servicesBar"
+                class="progress-bar red-bar"
+                style="width: 42%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          📊 Economic Indicators
+        </h2>
+
+
+        <div class="economic-grid">
+
+
+          <div class="economic-card">
+
+            <div class="economic-icon">
+              📈
+            </div>
+
+            <div class="economic-label">
+              Economic Growth
+            </div>
+
+            <div
+              id="growthCard"
+              class="economic-value green"
+            >
+              4.8%
+            </div>
+
+          </div>
+
+
+          <div class="economic-card">
+
+            <div class="economic-icon">
+              🏪
+            </div>
+
+            <div class="economic-label">
+              Business Health
+            </div>
+
+            <div
+              id="businessCard"
+              class="economic-value green"
+            >
+              86%
+            </div>
+
+          </div>
+
+
+          <div class="economic-card">
+
+            <div class="economic-icon">
+              👷
+            </div>
+
+            <div class="economic-label">
+              Employment
+            </div>
+
+            <div
+              id="employmentCard"
+              class="economic-value green"
+            >
+              88%
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          🏛️ Tax Settings
+        </h2>
+
+
+        <div class="tax-control">
+
+          <div class="tax-info">
+
+            <h3>
+              Property Tax
+            </h3>
+
+            <p>
+              Revenue from residential properties.
+            </p>
+
+          </div>
+
+          <input
+            id="propertyTaxInput"
+            class="tax-input"
+            type="number"
+            min="0"
+            max="30"
+            value="10"
+          >
+
+        </div>
+
+
+        <div class="tax-control">
+
+          <div class="tax-info">
+
+            <h3>
+              Business Tax
+            </h3>
+
+            <p>
+              Revenue collected from businesses.
+            </p>
+
+          </div>
+
+          <input
+            id="businessTaxInput"
+            class="tax-input"
+            type="number"
+            min="0"
+            max="30"
+            value="10"
+          >
+
+        </div>
+
+
+        <div class="action-buttons">
+
+          <button
+            class="action-btn"
+            onclick="applyTaxes()"
+          >
+            💰 Apply Tax Rates
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          🧾 Recent Transactions
+        </h2>
+
+
+        <div
+          id="transactions"
+          class="transaction-list"
+        >
+
+          <div class="transaction">
+
+            <span>
+              🏠 Property tax collection
+            </span>
+
+            <strong class="income">
+              +$420
+            </strong>
+
+          </div>
+
+          <div class="transaction">
+
+            <span>
+              🏢 Business tax collection
+            </span>
+
+            <strong class="income">
+              +$340
+            </strong>
+
+          </div>
+
+          <div class="transaction">
+
+            <span>
+              🛣️ Road maintenance
+            </span>
+
+            <strong class="expense">
+              -$180
+            </strong>
+
+          </div>
+
+          <div class="transaction">
+
+            <span>
+              🏥 Public services
+            </span>
+
+            <strong class="expense">
+              -$260
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          ⚠️ Economic Status
+        </h2>
+
+        <div
+          id="economicAlert"
+          class="alert"
+        >
+          📈 The city economy is healthy and generating a positive daily balance.
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+
+  <script>
+
+    let treasury = 50000;
+
+    let propertyTax = 10;
+
+    let businessTax = 10;
+
+    let economicGrowth = 4.8;
+
+    let businessHealth = 86;
+
+    let employment = 88;
+
+
+    const treasuryEl =
+      document.getElementById(
+        "treasury"
+      );
+
+    const treasuryCardEl =
+      document.getElementById(
+        "treasuryCard"
+      );
+
+    const dailyIncomeEl =
+      document.getElementById(
+        "dailyIncome"
+      );
+
+    const dailyExpensesEl =
+      document.getElementById(
+        "dailyExpenses"
+      );
+
+    const dailyProfitEl =
+      document.getElementById(
+        "dailyProfit"
+      );
+
+    const taxRevenueEl =
+      document.getElementById(
+        "taxRevenue"
+      );
+
+    const growthEl =
+      document.getElementById(
+        "growth"
+      );
+
+    const businessHealthEl =
+      document.getElementById(
+        "businessHealth"
+      );
+
+    const employmentEl =
+      document.getElementById(
+        "employment"
+      );
+
+    const taxRateEl =
+      document.getElementById(
+        "taxRate"
+      );
+
+    const estimatedTaxEl =
+      document.getElementById(
+        "estimatedTax"
+      );
+
+    const revenueCardEl =
+      document.getElementById(
+        "revenueCard"
+      );
+
+    const expenseCardEl =
+      document.getElementById(
+        "expenseCard"
+      );
+
+    const profitCardEl =
+      document.getElementById(
+        "profitCard"
+      );
+
+
+    function money(value) {
+
+      return "$" +
+        Math.round(value)
+          .toLocaleString();
+
+    }
+
+
+    function calculateFinances() {
+
+      const propertyRevenue =
+        Math.round(
+          420 *
+          (propertyTax / 10)
+        );
+
+      const businessRevenue =
+        Math.round(
+          340 *
+          (businessTax / 10)
+        );
+
+      const taxRevenue =
+        propertyRevenue +
+        businessRevenue;
+
+      const infrastructure =
+        180;
+
+      const publicServices =
+        260;
+
+      const totalExpenses =
+        infrastructure +
+        publicServices;
+
+      const totalIncome =
+        taxRevenue;
+
+      const profit =
+        totalIncome -
+        totalExpenses;
+
+      return {
+
+        propertyRevenue,
+        businessRevenue,
+        taxRevenue,
+        infrastructure,
+        publicServices,
+        totalExpenses,
+        totalIncome,
+        profit
+
+      };
+
+    }
+
+
+    function updateEconomy() {
+
+      const finances =
+        calculateFinances();
+
+
+      treasuryEl.textContent =
+        money(treasury);
+
+      treasuryCardEl.textContent =
+        money(treasury);
+
+
+      dailyIncomeEl.textContent =
+        money(
+          finances.totalIncome
+        );
+
+      dailyExpensesEl.textContent =
+        money(
+          finances.totalExpenses
+        );
+
+
+      const profitPrefix =
+        finances.profit >= 0
+          ? "+"
+          : "-";
+
+      dailyProfitEl.textContent =
+        profitPrefix +
+        money(
+          Math.abs(
+            finances.profit
+          )
+        );
+
+
+      taxRevenueEl.textContent =
+        money(
+          finances.taxRevenue
+        );
+
+
+      revenueCardEl.textContent =
+        money(
+          finances.totalIncome
+        );
+
+      expenseCardEl.textContent =
+        money(
+          finances.totalExpenses
+        );
+
+
+      profitCardEl.textContent =
+        profitPrefix +
+        money(
+          Math.abs(
+            finances.profit
+          )
+        );
+
+
+      if (finances.profit >= 0) {
+
+        dailyProfitEl.className =
+          "green";
+
+        profitCardEl.className =
+          "card-value green";
+
+      } else {
+
+        dailyProfitEl.className =
+          "red";
+
+        profitCardEl.className =
+          "card-value red";
+
+      }
+
+
+      document.getElementById(
+        "propertyTaxValue"
+      ).textContent =
+        money(
+          finances.propertyRevenue
+        );
+
+
+      document.getElementById(
+        "businessTaxValue"
+      ).textContent =
+        money(
+          finances.businessRevenue
+        );
+
+
+      document.getElementById(
+        "roadsExpense"
+      ).textContent =
+        "-" +
+        money(
+          finances.infrastructure
+        );
+
+
+      document.getElementById(
+        "servicesExpense"
+      ).textContent =
+        "-" +
+        money(
+          finances.publicServices
+        );
+
+
+      document.getElementById(
+        "propertyTaxBar"
+      ).style.width =
+        Math.min(
+          100,
+          propertyTax * 5
+        ) + "%";
+
+
+      document.getElementById(
+        "businessTaxBar"
+      ).style.width =
+        Math.min(
+          100,
+          businessTax * 5
+        ) + "%";
+
+
+      document.getElementById(
+        "roadsBar"
+      ).style.width =
+        Math.round(
+          (finances.infrastructure /
+          finances.totalExpenses) *
+          100
+        ) + "%";
+
+
+      document.getElementById(
+        "servicesBar"
+      ).style.width =
+        Math.round(
+          (finances.publicServices /
+          finances.totalExpenses) *
+          100
+        ) + "%";
+
+
+      growthEl.textContent =
+        economicGrowth.toFixed(1) +
+        "%";
+
+      document.getElementById(
+        "growthCard"
+      ).textContent =
+        economicGrowth.toFixed(1) +
+        "%";
+
+
+      businessHealthEl.textContent =
+        businessHealth +
+        "%";
+
+      document.getElementById(
+        "businessCard"
+      ).textContent =
+        businessHealth +
+        "%";
+
+
+      employmentEl.textContent =
+        employment +
+        "%";
+
+      document.getElementById(
+        "employmentCard"
+      ).textContent =
+        employment +
+        "%";
+
+
+      taxRateEl.textContent =
+        Math.round(
+          (propertyTax +
+          businessTax) / 2
+        ) +
+        "%";
+
+
+      estimatedTaxEl.textContent =
+        money(
+          finances.taxRevenue
+        );
+
+
+      updateEconomicAlert(
+        finances.profit
+      );
+
+    }
+
+
+    function updateEconomicAlert(
+      profit
+    ) {
+
+      const alert =
+        document.getElementById(
+          "economicAlert"
+        );
+
+
+      if (profit > 0) {
+
+        alert.className =
+          "alert";
+
+        alert.textContent =
+          "📈 The city economy is healthy and generating a positive daily balance.";
+
+      }
+
+      else if (profit === 0) {
+
+        alert.className =
+          "alert warning";
+
+        alert.textContent =
+          "⚖️ The city budget is currently balanced. Consider increasing revenue.";
+
+      }
+
+      else {
+
+        alert.className =
+          "alert danger";
+
+        alert.textContent =
+          "🚨 The city is spending more than it earns. Review taxes and expenses.";
+
+      }
+
+    }
+
+
+    function applyTaxes() {
+
+      const propertyInput =
+        document.getElementById(
+          "propertyTaxInput"
+        );
+
+      const businessInput =
+        document.getElementById(
+          "businessTaxInput"
+        );
+
+
+      let newPropertyTax =
+        Number(
+          propertyInput.value
+        );
+
+      let newBusinessTax =
+        Number(
+          businessInput.value
+        );
+
+
+      if (
+        Number.isNaN(
+          newPropertyTax
+        )
+      ) {
+
+        newPropertyTax = 10;
+
+      }
+
+
+      if (
+        Number.isNaN(
+          newBusinessTax
+        )
+      ) {
+
+        newBusinessTax = 10;
+
+      }
+
+
+      propertyTax =
+        Math.max(
+          0,
+          Math.min(
+            30,
+            newPropertyTax
+          )
+        );
+
+
+      businessTax =
+        Math.max(
+          0,
+          Math.min(
+            30,
+            newBusinessTax
+          )
+        );
+
+
+      propertyInput.value =
+        propertyTax;
+
+      businessInput.value =
+        businessTax;
+
+
+      if (
+        propertyTax > 20 ||
+        businessTax > 20
+      ) {
+
+        businessHealth =
+          Math.max(
+            50,
+            businessHealth - 2
+          );
+
+        economicGrowth =
+          Math.max(
+            -5,
+            economicGrowth - 0.3
+          );
+
+      }
+
+      else if (
+        propertyTax < 5 &&
+        businessTax < 5
+      ) {
+
+        businessHealth =
+          Math.min(
+            100,
+            businessHealth + 1
+          );
+
+        economicGrowth =
+          Math.min(
+            10,
+            economicGrowth + 0.2
+          );
+
+      }
+
+      else {
+
+        economicGrowth =
+          Math.min(
+            10,
+            economicGrowth + 0.1
+          );
+
+      }
+
+
+      updateEconomy();
+
+    }
+
+
+    function simulateEconomicDay() {
+
+      const finances =
+        calculateFinances();
+
+
+      treasury +=
+        finances.profit;
+
+
+      if (
+        finances.profit > 0
+      ) {
+
+        economicGrowth =
+          Math.min(
+            10,
+            economicGrowth + 0.1
+          );
+
+        businessHealth =
+          Math.min(
+            100,
+            businessHealth + 0.2
+          );
+
+      }
+
+      else {
+
+        economicGrowth =
+          Math.max(
+            -5,
+            economicGrowth - 0.2
+          );
+
+        businessHealth =
+          Math.max(
+            0,
+            businessHealth - 0.5
+          );
+
+      }
+
+
+      employment =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            Math.round(
+              70 +
+              businessHealth * 0.2
+            )
+          )
+        );
+
+
+      updateEconomy();
+
+    }
+
+
+    function goBack() {
+
+      window.location.href =
+        "../index.html";
+
+    }
+
+
+    updateEconomy();
+
+
+    /*
+      Simulate a new economic day
+      every 15 seconds.
+    */
+
+    setInterval(
+      simulateEconomicDay,
+      15000
+    );
+
+  </script>
+
+</body>
+
+</html>
