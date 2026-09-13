@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital & Healthcare - City Manager Simulator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0b1220;
+  --panel: #172033;
+  --panel2: #202d43;
+  --border: #334155;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --blue: #38bdf8;
+  --green: #4ade80;
+  --red: #ef4444;
+  --yellow: #facc15;
+  --purple: #a78bfa;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.topbar {
+  min-height: 76px;
+  padding: 14px 24px;
+  background: #111a2b;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: #164e63;
+  font-size: 25px;
+}
+
+.brand h1 {
+  font-size: 21px;
+}
+
+.brand span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 10px 15px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.actions button:hover {
+  background: var(--panel2);
+}
+
+.dashboard {
+  max-width: 1500px;
+  margin: auto;
+  padding: 22px;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.title h2 {
+  font-size: 25px;
+  margin-bottom: 5px;
+}
+
+.title p {
+  color: var(--muted);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card,
+.panel,
+.bottom-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.card {
+  padding: 18px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.card small {
+  color: var(--muted);
+}
+
+.card-icon {
+  font-size: 23px;
+}
+
+.card strong {
+  font-size: 25px;
+}
+
+.green { color: var(--green); }
+.red { color: var(--red); }
+.yellow { color: var(--yellow); }
+.blue { color: var(--blue); }
+.purple { color: var(--purple); }
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 18px;
+}
+
+.panel {
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.panel h3 {
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+.city-map {
+  position: relative;
+  height: 390px;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 48%,
+      #334155 48%,
+      #334155 51%,
+      transparent 51%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 47%,
+      #334155 47%,
+      #334155 51%,
+      transparent 51%
+    ),
+    #102635;
+}
+
+.city-map::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 29%;
+  height: 8px;
+  background: #294354;
+}
+
+.city-map::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 67%;
+  width: 8px;
+  background: #294354;
+}
+
+.district {
+  position: absolute;
+  border: 1px dashed #64748b;
+  border-radius: 10px;
+  padding: 6px;
+  color: #cbd5e1;
+  font-size: 11px;
+  background: rgba(15,23,42,.35);
+}
+
+.d1 {
+  width: 31%;
+  height: 35%;
+  left: 5%;
+  top: 7%;
+}
+
+.d2 {
+  width: 28%;
+  height: 36%;
+  right: 5%;
+  top: 7%;
+}
+
+.d3 {
+  width: 31%;
+  height: 37%;
+  left: 5%;
+  bottom: 7%;
+}
+
+.d4 {
+  width: 28%;
+  height: 37%;
+  right: 5%;
+  bottom: 7%;
+}
+
+.hospital {
+  position: absolute;
+  z-index: 3;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #0284c7;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  box-shadow: 0 0 0 6px rgba(56,189,248,.12);
+}
+
+.h1 {
+  left: 40%;
+  top: 18%;
+}
+
+.h2 {
+  left: 17%;
+  bottom: 18%;
+}
+
+.h3 {
+  right: 15%;
+  bottom: 19%;
+}
+
+.ambulance {
+  position: absolute;
+  z-index: 4;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #22c55e;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  animation: move 3s infinite alternate ease-in-out;
+}
+
+.a1 {
+  left: 28%;
+  top: 38%;
+}
+
+.a2 {
+  right: 28%;
+  top: 48%;
+  animation-delay: .7s;
+}
+
+.a3 {
+  left: 48%;
+  bottom: 17%;
+  animation-delay: 1.2s;
+}
+
+@keyframes move {
+  from {
+    transform: translate(0,0);
+  }
+
+  to {
+    transform: translate(17px,-11px);
+  }
+}
+
+.legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.hospital-dot {
+  background: #0284c7;
+}
+
+.ambulance-dot {
+  background: #22c55e;
+}
+
+.progress-row {
+  margin-bottom: 17px;
+}
+
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.progress-head span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.progress-head strong {
+  font-size: 14px;
+}
+
+.progress {
+  height: 9px;
+  background: #0f172a;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress div {
+  height: 100%;
+  border-radius: 20px;
+  transition: width .4s;
+}
+
+.blue-bar {
+  background: var(--blue);
+}
+
+.green-bar {
+  background: var(--green);
+}
+
+.purple-bar {
+  background: var(--purple);
+}
+
+.yellow-bar {
+  background: var(--yellow);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 19px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.control {
+  padding: 13px;
+  text-align: left;
+  color: var(--text);
+  background: #1e293b;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.control:hover {
+  background: #27364c;
+}
+
+.control span {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.control small {
+  color: var(--muted);
+}
+
+.alert {
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #132a23;
+  border: 1px solid #245b46;
+  color: #bbf7d0;
+}
+
+.activity {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: var(--panel2);
+  border-left: 4px solid var(--blue);
+}
+
+.activity:last-child {
+  margin-bottom: 0;
+}
+
+.activity strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.activity span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.bottom {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.bottom-box {
+  padding: 15px;
+}
+
+.bottom-box span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.bottom-box strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.notification {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #1e293b;
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 35px rgba(0,0,0,.35);
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: .25s;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1100px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actions button {
+    flex: 1;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 12px;
+  }
+
+  .cards,
+  .stats,
+  .controls,
+  .bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .city-map {
+    height: 320px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="brand">
+
+    <div class="logo">🏥</div>
+
+    <div>
+      <h1>Hospital & Healthcare</h1>
+      <span>City Manager Simulator • Healthcare Services</span>
+    </div>
+
+  </div>
+
+  <div class="actions">
+    <button id="refreshBtn">🔄 Refresh</button>
+    <button id="backBtn">← Back to City</button>
+  </div>
+
+</header>
+
+
+<main class="dashboard">
+
+  <div class="title">
+    <h2>🏥 City Healthcare Operations</h2>
+    <p>Manage hospitals, ambulances, medical capacity and healthcare coverage.</p>
+  </div>
+
+
+  <section class="cards">
+
+    <div class="card">
+      <div class="card-top">
+        <small>Doctors</small>
+        <span class="card-icon">👨‍⚕️</span>
+      </div>
+      <strong id="doctors">248</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Hospitals</small>
+        <span class="card-icon">🏥</span>
+      </div>
+      <strong id="hospitals">3</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Health Coverage</small>
+        <span class="card-icon">❤️</span>
+      </div>
+      <strong class="green" id="healthCoverage">93%</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Emergency Time</small>
+        <span class="card-icon">⏱️</span>
+      </div>
+      <strong class="blue" id="responseTime">6.2 min</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <small>Hospital Capacity</small>
+        <span class="card-icon">🛏️</span>
+      </div>
+      <strong class="yellow" id="capacity">76%</strong>
+    </div>
+
+  </section>
+
+
+  <div class="main-grid">
+
+    <section>
+
+      <div class="panel">
+
+        <h3>🗺️ Healthcare Coverage Map</h3>
+
+        <div class="city-map">
+
+          <div class="district d1">District A</div>
+          <div class="district d2">District B</div>
+          <div class="district d3">District C</div>
+          <div class="district d4">District D</div>
+
+          <div class="hospital h1">🏥</div>
+          <div class="hospital h2">🏥</div>
+          <div class="hospital h3">🏥</div>
+
+          <div class="ambulance a1">🚑</div>
+          <div class="ambulance a2">🚑</div>
+          <div class="ambulance a3">🚑</div>
+
+        </div>
+
+        <div class="legend">
+
+          <span>
+            <i class="dot hospital-dot"></i>
+            Hospital
+          </span>
+
+          <span>
+            <i class="dot ambulance-dot"></i>
+            Ambulance
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>📊 Healthcare Performance</h3>
+
+        <div class="progress-row">
+
+          <div class="progress-head">
+            <span>Healthcare Coverage</span>
+            <strong id="coverageText">93%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="coverageBar"
+              class="green-bar"
+              style="width:93%">
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="progress-row">
+
+          <div class="progress-head">
+            <span>Emergency Response</span>
+            <strong id="responseText">89%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="responseBar"
+              class="blue-bar"
+              style="width:89%">
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="progress-row">
+
+          <div class="progress-head">
+            <span>Hospital Capacity</span>
+            <strong id="capacityText">76%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="capacityBar"
+              class="yellow-bar"
+              style="width:76%">
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="progress-row">
+
+          <div class="progress-head">
+            <span>Medical Quality</span>
+            <strong id="qualityText">91%</strong>
+          </div>
+
+          <div class="progress">
+            <div
+              id="qualityBar"
+              class="purple-bar"
+              style="width:91%">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section>
+
+      <div class="panel">
+
+        <h3>📌 Healthcare Statistics</h3>
+
+        <div class="stats">
+
+          <div class="stat">
+            <span>👨‍⚕️ Doctors</span>
+            <strong id="doctorStat">248</strong>
+          </div>
+
+          <div class="stat">
+            <span>👩‍⚕️ Nurses</span>
+            <strong id="nurses">412</strong>
+          </div>
+
+          <div class="stat">
+            <span>🛏️ Hospital Beds</span>
+            <strong id="beds">1,240</strong>
+          </div>
+
+          <div class="stat">
+            <span>🚑 Ambulances</span>
+            <strong id="ambulances">24</strong>
+          </div>
+
+          <div class="stat">
+            <span>📞 Emergency Calls</span>
+            <strong id="calls">31</strong>
+          </div>
+
+          <div class="stat">
+            <span>👥 Patients Today</span>
+            <strong id="patients">486</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>⚙️ Healthcare Controls</h3>
+
+        <div class="controls">
+
+          <button class="control" id="ambulanceBtn">
+            <span>🚑</span>
+            Dispatch Ambulance
+            <small>Respond to emergency</small>
+          </button>
+
+          <button class="control" id="doctorBtn">
+            <span>👨‍⚕️</span>
+            Add Medical Staff
+            <small>Increase healthcare staff</small>
+          </button>
+
+          <button class="control" id="hospitalBtn">
+            <span>🏥</span>
+            Upgrade Hospital
+            <small>Increase medical capacity</small>
+          </button>
+
+          <button class="control" id="emergencyBtn">
+            <span>🚨</span>
+            Simulate Emergency
+            <small>Test healthcare response</small>
+          </button>
+
+        </div>
+
+        <div class="alert" id="alert">
+          🟢 Healthcare services are operating normally across the city.
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h3>🕒 Recent Healthcare Activity</h3>
+
+        <div id="activityList">
+
+          <div class="activity">
+            <strong>🚑 Ambulance completed response</strong>
+            <span>District A • 4 minutes ago</span>
+          </div>
+
+          <div class="activity">
+            <strong>🩺 Medical staff shift completed</strong>
+            <span>Central Hospital • 12 minutes ago</span>
+          </div>
+
+          <div class="activity">
+            <strong>🏥 Hospital capacity checked</strong>
+            <span>District C • 19 minutes ago</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <section class="bottom">
+
+    <div class="bottom-box">
+      <span>📅 Daily Healthcare Budget</span>
+      <strong id="budget">$24,600</strong>
+    </div>
+
+    <div class="bottom-box">
+      <span>🚑 Active Ambulances</span>
+      <strong id="activeAmbulances">9</strong>
+    </div>
+
+    <div class="bottom-box">
+      <span>🩺 Medical Quality</span>
+      <strong id="qualityScore">91%</strong>
+    </div>
+
+    <div class="bottom-box">
+      <span>⭐ Healthcare Rating</span>
+      <strong id="rating">4.7 / 5</strong>
+    </div>
+
+  </section>
+
+</main>
+
+
+<div class="notification" id="notification"></div>
+
+
+<script>
+
+let doctors = 248;
+let hospitals = 3;
+let healthCoverage = 93;
+let responseTime = 6.2;
+let capacity = 76;
+
+let response = 89;
+let quality = 91;
+
+let nurses = 412;
+let beds = 1240;
+let ambulances = 24;
+let calls = 31;
+let patients = 486;
+
+let activeAmbulances = 9;
+let budget = 24600;
+let emergencies = 1;
+
+
+const $ = id => document.getElementById(id);
+
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+
+function notify(message) {
+
+  const box = $("notification");
+
+  box.textContent = message;
+  box.classList.add("show");
+
+  setTimeout(() => {
+    box.classList.remove("show");
+  }, 2500);
+}
+
+
+function addActivity(title, detail) {
+
+  const list = $("activityList");
+
+  const item = document.createElement("div");
+
+  item.className = "activity";
+
+  item.innerHTML = `
+    <strong>${title}</strong>
+    <span>${detail}</span>
+  `;
+
+  list.prepend(item);
+
+  while (list.children.length > 5) {
+    list.removeChild(list.lastChild);
+  }
+}
+
+
+function updateAlert() {
+
+  const alert = $("alert");
+
+  if (capacity >= 90) {
+
+    alert.textContent =
+      "🔴 Hospitals are approaching full capacity. Increase medical capacity.";
+
+    alert.style.background = "#35171b";
+    alert.style.borderColor = "#7f1d1d";
+    alert.style.color = "#fecaca";
+
+  } else if (capacity >= 82) {
+
+    alert.textContent =
+      "🟡 Hospital capacity is getting high. Consider upgrading a hospital.";
+
+    alert.style.background = "#332b12";
+    alert.style.borderColor = "#6b5a16";
+    alert.style.color = "#fef08a";
+
+  } else {
+
+    alert.textContent =
+      "🟢 Healthcare services are operating normally across the city.";
+
+    alert.style.background = "#132a23";
+    alert.style.borderColor = "#245b46";
+    alert.style.color = "#bbf7d0";
+  }
+}
+
+
+function updateUI() {
+
+  $("doctors").textContent = doctors;
+  $("hospitals").textContent = hospitals;
+
+  $("healthCoverage").textContent =
+    healthCoverage + "%";
+
+  $("responseTime").textContent =
+    responseTime.toFixed(1) + " min";
+
+  $("capacity").textContent =
+    capacity + "%";
+
+  $("coverageText").textContent =
+    healthCoverage + "%";
+
+  $("responseText").textContent =
+    response + "%";
+
+  $("capacityText").textContent =
+    capacity + "%";
+
+  $("qualityText").textContent =
+    quality + "%";
+
+  $("coverageBar").style.width =
+    healthCoverage + "%";
+
+  $("responseBar").style.width =
+    response + "%";
+
+  $("capacityBar").style.width =
+    capacity + "%";
+
+  $("qualityBar").style.width =
+    quality + "%";
+
+  $("doctorStat").textContent = doctors;
+  $("nurses").textContent = nurses;
+  $("beds").textContent = beds.toLocaleString();
+  $("ambulances").textContent = ambulances;
+  $("calls").textContent = calls;
+  $("patients").textContent = patients;
+
+  $("activeAmbulances").textContent =
+    activeAmbulances;
+
+  $("qualityScore").textContent =
+    quality + "%";
+
+  $("budget").textContent =
+    "$" + budget.toLocaleString();
+
+  $("healthCoverage").className =
+    healthCoverage >= 80 ? "green" :
+    healthCoverage >= 60 ? "yellow" :
+    "red";
+
+  $("capacity").className =
+    capacity < 82 ? "green" :
+    capacity < 90 ? "yellow" :
+    "red";
+
+  updateAlert();
+}
+
+
+$("ambulanceBtn").addEventListener("click", () => {
+
+  if (ambulances <= 0) {
+    notify("No ambulances available.");
+    return;
+  }
+
+  ambulances--;
+  activeAmbulances++;
+
+  calls++;
+  response = clamp(response + 2, 0, 100);
+  responseTime = Math.max(3, responseTime - .2);
+
+  budget -= 500;
+
+  addActivity(
+    "🚑 Ambulance dispatched",
+    "Emergency medical response started • Just now"
+  );
+
+  notify("🚑 Ambulance dispatched.");
+
+  updateUI();
+
+
+  setTimeout(() => {
+
+    ambulances++;
+    activeAmbulances =
+      Math.max(0, activeAmbulances - 1);
+
+    patients++;
+
+    addActivity(
+      "✅ Emergency response completed",
+      "Ambulance returned to hospital • Just now"
+    );
+
+    updateUI();
+
+  }, 3500);
+});
+
+
+$("doctorBtn").addEventListener("click", () => {
+
+  doctors += 10;
+  nurses += 16;
+
+  response = clamp(response + 2, 0, 100);
+  quality = clamp(quality + 1, 0, 100);
+
+  responseTime =
+    Math.max(3, responseTime - .15);
+
+  budget -= 1500;
+
+  addActivity(
+    "👨‍⚕️ Medical staff added",
+    "Doctors and nurses joined the healthcare system • Just now"
+  );
+
+  notify("👨‍⚕️ Medical staff increased.");
+
+  updateUI();
+});
+
+
+$("hospitalBtn").addEventListener("click", () => {
+
+  hospitals++;
+
+  beds += 300;
+
+  capacity =
+    clamp(capacity - 8, 20, 100);
+
+  healthCoverage =
+    clamp(healthCoverage + 4, 0, 100);
+
+  quality =
+    clamp(quality + 2, 0, 100);
+
+  budget -= 7000;
+
+  addActivity(
+    "🏥 Hospital upgraded",
+    "Medical capacity and city coverage increased • Just now"
+  );
+
+  notify("🏥 Hospital capacity upgraded.");
+
+  updateUI();
+});
+
+
+$("emergencyBtn").addEventListener("click", () => {
+
+  emergencies++;
+  calls++;
+
+  capacity =
+    clamp(capacity + 3, 0, 100);
+
+  response =
+    clamp(response - 2, 0, 100);
+
+  addActivity(
+    "🚨 Medical emergency simulated",
+    "Emergency medical team responding • Just now"
+  );
+
+  notify("🚨 Emergency response activated.");
+
+  updateUI();
+
+
+  setTimeout(() => {
+
+    if (emergencies > 0) {
+
+      emergencies--;
+
+      capacity =
+        clamp(capacity - 2, 20, 100);
+
+      response =
+        clamp(response + 2, 0, 100);
+
+      patients++;
+
+      addActivity(
+        "🟢 Emergency resolved",
+        "Medical response completed successfully • Just now"
+      );
+
+      updateUI();
+    }
+
+  }, 4000);
+});
+
+
+$("refreshBtn").addEventListener("click", () => {
+
+  patients += Math.floor(Math.random() * 10);
+
+  calls += Math.floor(Math.random() * 3);
+
+  responseTime = clamp(
+    responseTime + (Math.random() * .4 - .2),
+    3,
+    10
+  );
+
+  notify("🔄 Healthcare department refreshed.");
+
+  updateUI();
+});
+
+
+$("backBtn").addEventListener("click", () => {
+  window.location.href = "../index.html";
+});
+
+
+setInterval(() => {
+
+  patients += Math.floor(Math.random() * 5);
+
+  calls += Math.floor(Math.random() * 2);
+
+  if (Math.random() > .65) {
+    capacity = clamp(capacity + 1, 20, 100);
+  }
+
+  responseTime = clamp(
+    responseTime + (Math.random() * .2 - .1),
+    3,
+    10
+  );
+
+  updateUI();
+
+}, 10000);
+
+
+updateUI();
+
+</script>
+
+</body>
+</html>
