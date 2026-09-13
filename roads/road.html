@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roads & Infrastructure — City Manager Simulator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0b1220;
+    --panel: #172033;
+    --panel2: #202d43;
+    --border: #334155;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --blue: #38bdf8;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #ef4444;
+    --purple: #a78bfa;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.header {
+    height: 76px;
+    background: #111a2b;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    display: grid;
+    place-items: center;
+    font-size: 23px;
+}
+
+.title h1 {
+    font-size: 21px;
+}
+
+.title p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.back {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 11px 17px;
+}
+
+.back:hover {
+    background: #2b3b56;
+}
+
+.container {
+    max-width: 1500px;
+    margin: auto;
+    padding: 24px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.value {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 7px;
+}
+
+.good {
+    color: var(--green);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.warning-text {
+    color: var(--yellow);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 20px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-title h2 {
+    font-size: 17px;
+}
+
+.section-title span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.map {
+    height: 430px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        #111b2d;
+    background-size: 40px 40px;
+}
+
+.road {
+    position: absolute;
+    background: #3b4658;
+}
+
+.horizontal {
+    height: 30px;
+    left: 0;
+    right: 0;
+}
+
+.vertical {
+    width: 30px;
+    top: 0;
+    bottom: 0;
+}
+
+.r1 { top: 25%; }
+.r2 { top: 50%; }
+.r3 { top: 75%; }
+
+.c1 { left: 25%; }
+.c2 { left: 50%; }
+.c3 { left: 75%; }
+
+.bridge {
+    position: absolute;
+    height: 42px;
+    background: #64748b;
+    border-top: 5px solid #cbd5e1;
+    border-bottom: 5px solid #cbd5e1;
+    left: 32%;
+    right: 32%;
+    top: 46%;
+    z-index: 2;
+}
+
+.light {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--yellow);
+    box-shadow: 0 0 8px rgba(250,204,21,.8);
+    z-index: 5;
+}
+
+.l1 { left: 23%; top: 22%; }
+.l2 { left: 49%; top: 22%; }
+.l3 { left: 74%; top: 22%; }
+.l4 { left: 23%; top: 47%; }
+.l5 { left: 49%; top: 47%; }
+.l6 { left: 74%; top: 47%; }
+.l7 { left: 23%; top: 72%; }
+.l8 { left: 49%; top: 72%; }
+.l9 { left: 74%; top: 72%; }
+
+.construction {
+    position: absolute;
+    width: 95px;
+    height: 32px;
+    background: #f59e0b;
+    color: #111827;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 6;
+    left: 41%;
+    top: 11%;
+}
+
+.park-strip {
+    position: absolute;
+    background: #14532d;
+    opacity: .55;
+}
+
+.p1 {
+    width: 13%;
+    height: 15%;
+    left: 3%;
+    top: 5%;
+}
+
+.p2 {
+    width: 13%;
+    height: 15%;
+    right: 3%;
+    bottom: 5%;
+}
+
+.legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.dot.yellow {
+    background: var(--yellow);
+}
+
+.dot.gray {
+    background: #64748b;
+}
+
+.dot.orange {
+    background: #f59e0b;
+}
+
+.progress-row {
+    margin-bottom: 16px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+.progress-info span:last-child {
+    color: var(--blue);
+}
+
+.progress {
+    height: 9px;
+    background: #0d1626;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress div {
+    height: 100%;
+    border-radius: 20px;
+    transition: width .4s;
+    background: var(--blue);
+}
+
+.progress.green div {
+    background: var(--green);
+}
+
+.progress.yellow div {
+    background: var(--yellow);
+}
+
+.progress.purple div {
+    background: var(--purple);
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.control {
+    background: var(--panel2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: left;
+    transition: .2s;
+}
+
+.control:hover {
+    border-color: var(--blue);
+    transform: translateY(-1px);
+}
+
+.control strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.control small {
+    color: var(--muted);
+}
+
+.bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.metric {
+    display: flex;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid #273449;
+    font-size: 13px;
+}
+
+.metric:last-child {
+    border-bottom: none;
+}
+
+.metric span {
+    color: var(--muted);
+}
+
+.activity {
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    padding: 11px 0;
+    border-bottom: 1px solid #273449;
+    font-size: 13px;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.alert {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 8px;
+    background: rgba(74,222,128,.1);
+    border: 1px solid rgba(74,222,128,.25);
+    color: #bbf7d0;
+    font-size: 13px;
+}
+
+.alert.warning {
+    background: rgba(250,204,21,.1);
+    border-color: rgba(250,204,21,.25);
+    color: #fef08a;
+}
+
+.alert.danger {
+    background: rgba(239,68,68,.1);
+    border-color: rgba(239,68,68,.25);
+    color: #fecaca;
+}
+
+@media (max-width: 1100px) {
+    .stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 14px;
+    }
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .map {
+        height: 350px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="title">
+
+        <div class="icon">🛣️</div>
+
+        <div>
+            <h1>Roads & Infrastructure</h1>
+            <p>City infrastructure management system</p>
+        </div>
+
+    </div>
+
+    <button class="back" onclick="goBack()">
+        ← Back to City
+    </button>
+
+</header>
+
+<main class="container">
+
+<section class="stats">
+
+    <div class="card">
+        <div class="label">Road Network</div>
+        <div class="value" id="roads">184 km</div>
+        <div class="good">92% maintained</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Road Condition</div>
+        <div class="value" id="condition">88%</div>
+        <div class="good">Very Good</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Intersections</div>
+        <div class="value" id="intersections">42</div>
+        <div class="good">38 signalized</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Infrastructure Coverage</div>
+        <div class="value" id="coverage">94%</div>
+        <div class="good">Excellent</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Street Lights</div>
+        <div class="value" id="lights">1,248</div>
+        <div class="good">97% operational</div>
+    </div>
+
+</section>
+
+<section class="layout">
+
+<div class="card">
+
+    <div class="section-title">
+        <h2>🗺️ Infrastructure Network</h2>
+        <span>Live city map</span>
+    </div>
+
+    <div class="map">
+
+        <div class="park-strip p1"></div>
+        <div class="park-strip p2"></div>
+
+        <div class="road horizontal r1"></div>
+        <div class="road horizontal r2"></div>
+        <div class="road horizontal r3"></div>
+
+        <div class="road vertical c1"></div>
+        <div class="road vertical c2"></div>
+        <div class="road vertical c3"></div>
+
+        <div class="bridge"></div>
+
+        <div class="construction">
+            🚧 ROAD WORK
+        </div>
+
+        <div class="light l1"></div>
+        <div class="light l2"></div>
+        <div class="light l3"></div>
+        <div class="light l4"></div>
+        <div class="light l5"></div>
+        <div class="light l6"></div>
+        <div class="light l7"></div>
+        <div class="light l8"></div>
+        <div class="light l9"></div>
+
+    </div>
+
+    <div class="legend">
+
+        <div class="legend-item">
+            <div class="dot gray"></div>
+            Road
+        </div>
+
+        <div class="legend-item">
+            <div class="dot yellow"></div>
+            Street Light
+        </div>
+
+        <div class="legend-item">
+            <div class="dot orange"></div>
+            Construction
+        </div>
+
+    </div>
+
+    <div class="alert" id="alert">
+        ✓ Infrastructure network is operating normally.
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="section-title">
+        <h2>📊 Infrastructure Performance</h2>
+        <span>Live</span>
+    </div>
+
+    <div class="progress-row">
+
+        <div class="progress-info">
+            <span>Road Condition</span>
+            <span id="conditionText">88%</span>
+        </div>
+
+        <div class="progress">
+            <div id="conditionBar" style="width:88%"></div>
+        </div>
+
+    </div>
+
+    <div class="progress-row">
+
+        <div class="progress-info">
+            <span>Road Coverage</span>
+            <span id="coverageText">94%</span>
+        </div>
+
+        <div class="progress green">
+            <div id="coverageBar" style="width:94%"></div>
+        </div>
+
+    </div>
+
+    <div class="progress-row">
+
+        <div class="progress-info">
+            <span>Traffic Flow</span>
+            <span id="trafficText">86%</span>
+        </div>
+
+        <div class="progress purple">
+            <div id="trafficBar" style="width:86%"></div>
+        </div>
+
+    </div>
+
+    <div class="progress-row">
+
+        <div class="progress-info">
+            <span>Street Lighting</span>
+            <span id="lightingText">97%</span>
+        </div>
+
+        <div class="progress green">
+            <div id="lightingBar" style="width:97%"></div>
+        </div>
+
+    </div>
+
+    <div class="progress-row">
+
+        <div class="progress-info">
+            <span>Maintenance</span>
+            <span id="maintenanceText">91%</span>
+        </div>
+
+        <div class="progress yellow">
+            <div id="maintenanceBar" style="width:91%"></div>
+        </div>
+
+    </div>
+
+    <div class="section-title" style="margin-top:24px;">
+        <h2>⚙️ Management</h2>
+    </div>
+
+    <div class="controls">
+
+        <button class="control" onclick="buildRoad()">
+            <strong>🛣️ Build Road</strong>
+            <small>Add 2 km to the network</small>
+        </button>
+
+        <button class="control" onclick="repairRoads()">
+            <strong>🔧 Repair Roads</strong>
+            <small>Improve road condition</small>
+        </button>
+
+        <button class="control" onclick="addLights()">
+            <strong>💡 Add Street Lights</strong>
+            <small>Improve city lighting</small>
+        </button>
+
+        <button class="control" onclick="upgradeSignals()">
+            <strong>🚦 Upgrade Signals</strong>
+            <small>Improve intersection flow</small>
+        </button>
+
+        <button class="control" onclick="buildBridge()">
+            <strong>🌉 Build Bridge</strong>
+            <small>Expand infrastructure</small>
+        </button>
+
+        <button class="control" onclick="roadInspection()">
+            <strong>🔍 Road Inspection</strong>
+            <small>Check infrastructure health</small>
+        </button>
+
+    </div>
+
+</div>
+
+</section>
+
+<section class="bottom">
+
+<div class="card">
+
+    <div class="section-title">
+        <h2>🛣️ Road Network</h2>
+    </div>
+
+    <div class="metric">
+        <span>Total Roads</span>
+        <strong id="roadCount">184 km</strong>
+    </div>
+
+    <div class="metric">
+        <span>Main Roads</span>
+        <strong>64 km</strong>
+    </div>
+
+    <div class="metric">
+        <span>Local Roads</span>
+        <strong>120 km</strong>
+    </div>
+
+    <div class="metric">
+        <span>Intersections</span>
+        <strong id="intersectionCount">42</strong>
+    </div>
+
+    <div class="metric">
+        <span>Bridges</span>
+        <strong id="bridges">4</strong>
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="section-title">
+        <h2>💰 Infrastructure Finance</h2>
+    </div>
+
+    <div class="metric">
+        <span>Daily Budget</span>
+        <strong id="budget">$21,400</strong>
+    </div>
+
+    <div class="metric">
+        <span>Road Maintenance</span>
+        <strong>$7,200</strong>
+    </div>
+
+    <div class="metric">
+        <span>Street Lighting</span>
+        <strong>$3,600</strong>
+    </div>
+
+    <div class="metric">
+        <span>Traffic Systems</span>
+        <strong>$2,800</strong>
+    </div>
+
+    <div class="metric">
+        <span>Construction</span>
+        <strong>$5,900</strong>
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="section-title">
+        <h2>📋 Recent Activity</h2>
+    </div>
+
+    <div class="activity" id="activity">
+
+        <div class="activity-item">
+            🛣️ Main Boulevard maintenance completed
+            <span>Today • 10:25</span>
+        </div>
+
+        <div class="activity-item">
+            💡 24 street lights repaired
+            <span>Today • 09:40</span>
+        </div>
+
+        <div class="activity-item">
+            🚦 Traffic signal system upgraded
+            <span>Today • 08:55</span>
+        </div>
+
+        <div class="activity-item">
+            🔍 District road inspection completed
+            <span>Yesterday • 16:30</span>
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+</main>
+
+<script>
+
+let roads = 184;
+let condition = 88;
+let intersections = 42;
+let coverage = 94;
+let lights = 1248;
+
+let traffic = 86;
+let lighting = 97;
+let maintenance = 91;
+
+let bridges = 4;
+
+let budget = 21400;
+
+const $ = id => document.getElementById(id);
+
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
+function addActivity(text) {
+
+    const activity = $("activity");
+
+    const item = document.createElement("div");
+
+    item.className = "activity-item";
+
+    const time = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    item.innerHTML = `
+        ${text}
+        <span>Today • ${time}</span>
+    `;
+
+    activity.prepend(item);
+
+    while (activity.children.length > 6) {
+        activity.removeChild(activity.lastElementChild);
+    }
+}
+
+function notify(message, type = "normal") {
+
+    $("alert").textContent = message;
+
+    if (type === "danger") {
+        $("alert").className = "alert danger";
+    } else if (type === "warning") {
+        $("alert").className = "alert warning";
+    } else {
+        $("alert").className = "alert";
+    }
+}
+
+function updateUI() {
+
+    $("roads").textContent =
+        Math.round(roads) + " km";
+
+    $("condition").textContent =
+        Math.round(condition) + "%";
+
+    $("intersections").textContent =
+        intersections;
+
+    $("coverage").textContent =
+        Math.round(coverage) + "%";
+
+    $("lights").textContent =
+        Math.round(lights).toLocaleString();
+
+    $("conditionText").textContent =
+        Math.round(condition) + "%";
+
+    $("conditionBar").style.width =
+        condition + "%";
+
+    $("coverageText").textContent =
+        Math.round(coverage) + "%";
+
+    $("coverageBar").style.width =
+        coverage + "%";
+
+    $("trafficText").textContent =
+        Math.round(traffic) + "%";
+
+    $("trafficBar").style.width =
+        traffic + "%";
+
+    $("lightingText").textContent =
+        Math.round(lighting) + "%";
+
+    $("lightingBar").style.width =
+        lighting + "%";
+
+    $("maintenanceText").textContent =
+        Math.round(maintenance) + "%";
+
+    $("maintenanceBar").style.width =
+        maintenance + "%";
+
+    $("roadCount").textContent =
+        Math.round(roads) + " km";
+
+    $("intersectionCount").textContent =
+        intersections;
+
+    $("bridges").textContent =
+        bridges;
+
+    $("budget").textContent =
+        "$" + Math.round(budget).toLocaleString();
+}
+
+function buildRoad() {
+
+    roads += 2;
+
+    coverage = clamp(
+        coverage + 1,
+        0,
+        100
+    );
+
+    condition = clamp(
+        condition - 1,
+        50,
+        100
+    );
+
+    traffic = clamp(
+        traffic + 1,
+        0,
+        100
+    );
+
+    budget -= 1200;
+
+    addActivity(
+        "🛣️ 2 km of new road constructed"
+    );
+
+    notify(
+        "✓ Road network expanded successfully."
+    );
+
+    updateUI();
+}
+
+function repairRoads() {
+
+    condition = clamp(
+        condition + 4,
+        0,
+        100
+    );
+
+    maintenance = clamp(
+        maintenance + 3,
+        0,
+        100
+    );
+
+    budget -= 950;
+
+    addActivity(
+        "🔧 Road maintenance completed"
+    );
+
+    notify(
+        "✓ Damaged roads have been repaired."
+    );
+
+    updateUI();
+}
+
+function addLights() {
+
+    lights += 40;
+
+    lighting = clamp(
+        lighting + 2,
+        0,
+        100
+    );
+
+    coverage = clamp(
+        coverage + 1,
+        0,
+        100
+    );
+
+    budget -= 600;
+
+    addActivity(
+        "💡 40 new street lights installed"
+    );
+
+    notify(
+        "✓ Street lighting coverage improved."
+    );
+
+    updateUI();
+}
+
+function upgradeSignals() {
+
+    intersections++;
+
+    traffic = clamp(
+        traffic + 3,
+        0,
+        100
+    );
+
+    condition = clamp(
+        condition + 1,
+        0,
+        100
+    );
+
+    budget -= 750;
+
+    addActivity(
+        "🚦 Traffic signal system upgraded"
+    );
+
+    notify(
+        "✓ Intersection traffic flow improved."
+    );
+
+    updateUI();
+}
+
+function buildBridge() {
+
+    bridges++;
+
+    roads += 1;
+
+    coverage = clamp(
+        coverage + 2,
+        0,
+        100
+    );
+
+    budget -= 3200;
+
+    addActivity(
+        "🌉 New bridge added to the city network"
+    );
+
+    notify(
+        "✓ Bridge construction completed."
+    );
+
+    updateUI();
+}
+
+function roadInspection() {
+
+    const roll = Math.random();
+
+    if (roll < 0.2) {
+
+        condition = clamp(
+            condition - 3,
+            0,
+            100
+        );
+
+        notify(
+            "⚠️ Inspection found several roads requiring maintenance.",
+            "warning"
+        );
+
+        addActivity(
+            "⚠️ Road inspection found maintenance issues"
+        );
+
+    } else {
+
+        condition = clamp(
+            condition + 1,
+            0,
+            100
+        );
+
+        maintenance = clamp(
+            maintenance + 1,
+            0,
+            100
+        );
+
+        notify(
+            "✓ Road inspection completed. Network is healthy."
+        );
+
+        addActivity(
+            "🔍 Road inspection completed successfully"
+        );
+    }
+
+    budget -= 180;
+
+    updateUI();
+}
+
+function simulateInfrastructure() {
+
+    condition += Math.floor(
+        Math.random() * 3
+    ) - 1;
+
+    traffic += Math.floor(
+        Math.random() * 3
+    ) - 1;
+
+    lighting += Math.floor(
+        Math.random() * 2
+    ) - 1;
+
+    maintenance += Math.floor(
+        Math.random() * 3
+    ) - 1;
+
+    condition = clamp(
+        condition,
+        60,
+        100
+    );
+
+    traffic = clamp(
+        traffic,
+        55,
+        100
+    );
+
+    lighting = clamp(
+        lighting,
+        70,
+        100
+    );
+
+    maintenance = clamp(
+        maintenance,
+        65,
+        100
+    );
+
+    budget -= Math.floor(
+        Math.random() * 250
+    );
+
+    if (condition < 72) {
+
+        notify(
+            "⚠️ Several roads need maintenance.",
+            "warning"
+        );
+
+    } else if (traffic < 70) {
+
+        notify(
+            "⚠️ Traffic flow is becoming inefficient.",
+            "warning"
+        );
+
+    } else {
+
+        notify(
+            "✓ Infrastructure network operating normally."
+        );
+    }
+
+    updateUI();
+}
+
+function goBack() {
+    window.location.href = "../index.html";
+}
+
+updateUI();
+
+setInterval(
+    simulateInfrastructure,
+    10000
+);
+
+</script>
+
+</body>
+</html>
