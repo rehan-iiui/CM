@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>City Manager Simulator</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ==============================
+       TOP BAR
+  =============================== -->
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        🏙️
+      </div>
+
+      <div class="brand-text">
+        <h1>City Manager</h1>
+        <span>2D City Simulator</span>
+      </div>
+
+    </div>
+
+
+    <!-- CITY STATISTICS -->
+
+    <div class="stats">
+
+      <div class="stat">
+        <span>💰</span>
+        <div>
+          <small>Money</small>
+          <strong id="money">$50,000</strong>
+        </div>
+      </div>
+
+
+      <div class="stat">
+        <span>👥</span>
+        <div>
+          <small>Population</small>
+          <strong id="population">0</strong>
+        </div>
+      </div>
+
+
+      <div class="stat">
+        <span>😊</span>
+        <div>
+          <small>Happiness</small>
+          <strong id="happiness">100%</strong>
+        </div>
+      </div>
+
+
+      <div class="stat">
+        <span>📅</span>
+        <div>
+          <small>Day</small>
+          <strong id="cityDay">Day 1</strong>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- TOP CONTROLS -->
+
+    <div class="top-actions">
+
+      <button id="pauseBtn">
+        ⏸ Pause
+      </button>
+
+      <button id="saveBtn">
+        💾 Save
+      </button>
+
+      <button id="loadBtn">
+        ↩ Load
+      </button>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- ==============================
+       MAIN GAME
+  =============================== -->
+
+  <div class="game-layout">
+
+
+    <!-- ==========================
+         LEFT SIDEBAR
+    =========================== -->
+
+    <aside class="sidebar">
+
+
+      <!-- BUILD MENU -->
+
+      <section class="panel">
+
+        <h2>🏗️ Build</h2>
+
+
+        <button
+          class="build-btn active"
+          data-type="road"
+        >
+
+          <span>🛣️</span>
+
+          <div>
+            <b>Road</b>
+            <small>$100</small>
+          </div>
+
+        </button>
+
+
+        <button
+          class="build-btn"
+          data-type="house"
+        >
+
+          <span>🏠</span>
+
+          <div>
+            <b>House</b>
+            <small>$1,000</small>
+          </div>
+
+        </button>
+
+
+        <button
+          class="build-btn"
+          data-type="shop"
+        >
+
+          <span>🛒</span>
+
+          <div>
+            <b>Shop</b>
+            <small>$2,500</small>
+          </div>
+
+        </button>
+
+
+        <button
+          class="build-btn"
+          data-type="office"
+        >
+
+          <span>🏢</span>
+
+          <div>
+            <b>Office</b>
+            <small>$5,000</small>
+          </div>
+
+        </button>
+
+
+        <button
+          class="build-btn"
+          data-type="factory"
+        >
+
+          <span>🏭</span>
+
+          <div>
+            <b>Factory</b>
+            <small>$8,000</small>
+          </div>
+
+        </button>
+
+
+        <button
+          class="build-btn"
+          data-type="park"
+        >
+
+          <span>🌳</span>
+
+          <div>
+            <b>Park</b>
+            <small>$1,500</small>
+          </div>
+
+        </button>
+
+
+        <button
+          class="build-btn bulldoze"
+          data-type="bulldoze"
+        >
+
+          <span>🗑️</span>
+
+          <div>
+            <b>Bulldoze</b>
+            <small>Remove building</small>
+          </div>
+
+        </button>
+
+      </section>
+
+
+
+      <!-- ==========================
+           CITY INFORMATION
+      =========================== -->
+
+      <section class="panel">
+
+        <h2>📊 City Statistics</h2>
+
+
+        <div class="info-row">
+
+          <span>🏠 Homes</span>
+
+          <strong id="homes">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span>💼 Jobs</span>
+
+          <strong id="jobs">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span>🛒 Shops</span>
+
+          <strong id="shops">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span>🏭 Industry</span>
+
+          <strong id="factories">
+            0
+          </strong>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span>🌳 Parks</span>
+
+          <strong id="parks">
+            0
+          </strong>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ==========================
+           CITY CONTROLS
+      =========================== -->
+
+      <section class="panel">
+
+        <h2>⚙️ City Controls</h2>
+
+
+        <button
+          class="control-btn"
+          id="clearBtn"
+        >
+          🗑️ Clear City
+        </button>
+
+
+        <button
+          class="control-btn"
+          id="resetBtn"
+        >
+          🔄 New City
+        </button>
+
+      </section>
+
+
+
+      <!-- ==========================
+           FUTURE FEATURES
+      =========================== -->
+
+      <section class="panel feature-panel">
+
+        <h2>🌆 City Systems</h2>
+
+
+        <button class="feature-btn" data-feature="traffic">
+          🚦 Traffic
+        </button>
+
+
+        <button class="feature-btn" data-feature="citizens">
+          👨‍👩‍👧 Citizens
+        </button>
+
+
+        <button class="feature-btn" data-feature="economy">
+          💰 Economy
+        </button>
+
+
+        <button class="feature-btn" data-feature="electricity">
+          ⚡ Electricity
+        </button>
+
+
+        <button class="feature-btn" data-feature="water">
+          💧 Water
+        </button>
+
+
+        <button class="feature-btn" data-feature="waste">
+          🗑️ Waste
+        </button>
+
+
+        <button class="feature-btn" data-feature="police">
+          🚓 Police
+        </button>
+
+
+        <button class="feature-btn" data-feature="fire">
+          🚒 Fire
+        </button>
+
+
+        <button class="feature-btn" data-feature="hospital">
+          🏥 Hospital
+        </button>
+
+
+        <button class="feature-btn" data-feature="education">
+          🎓 Education
+        </button>
+
+
+        <button class="feature-btn" data-feature="transport">
+          🚌 Transport
+        </button>
+
+
+        <button class="feature-btn" data-feature="weather">
+          🌦️ Weather
+        </button>
+
+      </section>
+
+    </aside>
+
+
+
+    <!-- ==============================
+         MAIN CITY AREA
+    =============================== -->
+
+    <main class="game-area">
+
+
+      <!-- CITY HEADER -->
+
+      <div class="city-header">
+
+
+        <div>
+
+          <h2>
+            🏙️ New Horizon
+          </h2>
+
+          <p id="message">
+            Select a building and click the map to build.
+          </p>
+
+        </div>
+
+
+        <div class="time-box">
+
+          <span id="clock">
+            08:00
+          </span>
+
+          <small id="status">
+            CITY RUNNING
+          </small>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ==========================
+           CITY MAP
+      =========================== -->
+
+      <div class="map-wrapper">
+
+        <div id="cityMap">
+
+          <!-- JavaScript creates the city tiles here -->
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ==========================
+           BOTTOM CITY INFORMATION
+      =========================== -->
+
+      <div class="bottom-bar">
+
+
+        <div>
+
+          <span>
+            🏙️ City Level
+          </span>
+
+          <strong id="cityLevel">
+            Village
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            📈 Daily Income
+          </span>
+
+          <strong id="income">
+            $0
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            📉 Daily Expenses
+          </span>
+
+          <strong id="expenses">
+            $0
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            ⭐ Rating
+          </span>
+
+          <strong id="rating">
+            5.0
+          </strong>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+
+  <!-- ==============================
+       NOTIFICATION
+  =============================== -->
+
+  <div
+    id="notification"
+    class="notification"
+  ></div>
+
+
+
+  <!-- ==============================
+       JAVASCRIPT
+  =============================== -->
+
+  <script src="script.js"></script>
+
+</body>
+</html>
+```
