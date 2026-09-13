@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Citizens Management</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #0b1220;
+
+      color: #f8fafc;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .header {
+      height: 70px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 24px;
+
+      background: #111827;
+
+      border-bottom:
+        1px solid #334155;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+    }
+
+    .icon {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+      place-items: center;
+
+      background: #172554;
+
+      border-radius: 10px;
+
+      font-size: 24px;
+    }
+
+    h1 {
+      font-size: 19px;
+    }
+
+    .subtitle {
+      margin-top: 3px;
+
+      color: #94a3b8;
+
+      font-size: 12px;
+    }
+
+    .back {
+      padding: 9px 14px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .back:hover {
+      background: #334155;
+    }
+
+    .layout {
+      display: grid;
+
+      grid-template-columns:
+        280px 1fr;
+
+      min-height:
+        calc(100vh - 70px);
+    }
+
+    .sidebar {
+      padding: 18px;
+
+      background: #101827;
+
+      border-right:
+        1px solid #334155;
+    }
+
+    .panel {
+      padding: 15px;
+
+      margin-bottom: 15px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+
+      font-size: 14px;
+    }
+
+    .population-box {
+      text-align: center;
+    }
+
+    .population-number {
+      margin: 8px 0;
+
+      font-size: 42px;
+
+      font-weight: bold;
+
+      color: #7dd3fc;
+    }
+
+    .population-label {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .info {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 9px 0;
+
+      border-bottom:
+        1px solid #29364a;
+
+      font-size: 12px;
+    }
+
+    .info:last-child {
+      border-bottom: none;
+    }
+
+    .info strong {
+      color: #7dd3fc;
+    }
+
+    .green {
+      color: #4ade80 !important;
+    }
+
+    .yellow {
+      color: #facc15 !important;
+    }
+
+    .red {
+      color: #f87171 !important;
+    }
+
+    .main {
+      padding: 22px;
+
+      background: #0f172a;
+
+      overflow-y: auto;
+    }
+
+    .dashboard {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 14px;
+
+      margin-bottom: 18px;
+    }
+
+    .card {
+      padding: 16px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .card-title {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .card-value {
+      margin-top: 8px;
+
+      font-size: 25px;
+
+      font-weight: bold;
+    }
+
+    .section {
+      padding: 18px;
+
+      margin-bottom: 18px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 11px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+
+      font-size: 15px;
+    }
+
+    .bars {
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 14px;
+    }
+
+    .bar-row {
+      display: grid;
+
+      grid-template-columns:
+        120px 1fr 55px;
+
+      align-items: center;
+
+      gap: 10px;
+
+      font-size: 12px;
+    }
+
+    .bar-background {
+      height: 12px;
+
+      overflow: hidden;
+
+      background: #273449;
+
+      border-radius: 20px;
+    }
+
+    .bar {
+      height: 100%;
+
+      width: 0;
+
+      border-radius: 20px;
+
+      transition:
+        width 0.5s ease;
+    }
+
+    .bar-blue {
+      background: #38bdf8;
+    }
+
+    .bar-green {
+      background: #4ade80;
+    }
+
+    .bar-yellow {
+      background: #facc15;
+    }
+
+    .bar-purple {
+      background: #a78bfa;
+    }
+
+    .bar-orange {
+      background: #fb923c;
+    }
+
+    .age-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .age-card {
+      padding: 16px;
+
+      background: #111827;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 9px;
+
+      text-align: center;
+    }
+
+    .age-icon {
+      font-size: 28px;
+
+      margin-bottom: 7px;
+    }
+
+    .age-name {
+      color: #94a3b8;
+
+      font-size: 11px;
+    }
+
+    .age-value {
+      margin-top: 5px;
+
+      font-size: 21px;
+
+      font-weight: bold;
+    }
+
+    .activity-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 12px;
+    }
+
+    .activity {
+      padding: 14px;
+
+      background: #111827;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 9px;
+    }
+
+    .activity-top {
+      display: flex;
+
+      justify-content: space-between;
+
+      margin-bottom: 8px;
+
+      font-size: 12px;
+    }
+
+    .activity-top strong {
+      color: #7dd3fc;
+    }
+
+    .alert {
+      padding: 12px 14px;
+
+      margin-top: 15px;
+
+      background: #172033;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      color: #cbd5e1;
+
+      font-size: 12px;
+    }
+
+    .good-alert {
+      border-color: #166534;
+
+      background: #0f2a1b;
+    }
+
+    .warning-alert {
+      border-color: #854d0e;
+
+      background: #2a210d;
+    }
+
+    .danger-alert {
+      border-color: #991b1b;
+
+      background: #2a1111;
+    }
+
+    .buttons {
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 10px 13px;
+
+      color: white;
+
+      background: #1e293b;
+
+      border:
+        1px solid #334155;
+
+      border-radius: 8px;
+
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: #334155;
+    }
+
+    @media (max-width: 1050px) {
+
+      .dashboard {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media (max-width: 850px) {
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+
+        border-bottom:
+          1px solid #334155;
+      }
+
+      .age-grid {
+        grid-template-columns:
+          1fr;
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .header {
+        padding: 0 12px;
+      }
+
+      .main {
+        padding: 12px;
+      }
+
+      .dashboard {
+        grid-template-columns:
+          1fr;
+      }
+
+      .bar-row {
+        grid-template-columns:
+          90px 1fr 45px;
+      }
+
+      .activity-grid {
+        grid-template-columns:
+          1fr;
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <div class="title">
+
+      <div class="icon">
+        👨‍👩‍👧
+      </div>
+
+      <div>
+
+        <h1>
+          Citizens Management
+        </h1>
+
+        <div class="subtitle">
+          City Manager Simulator
+        </div>
+
+      </div>
+
+    </div>
+
+    <button
+      class="back"
+      onclick="goBack()"
+    >
+      ← City
+    </button>
+
+  </header>
+
+
+  <div class="layout">
+
+
+    <aside class="sidebar">
+
+
+      <div class="panel population-box">
+
+        <h2>
+          👥 Total Population
+        </h2>
+
+        <div
+          id="population"
+          class="population-number"
+        >
+          248
+        </div>
+
+        <div class="population-label">
+          PEOPLE LIVING IN THE CITY
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          📊 Citizen Statistics
+        </h2>
+
+        <div class="info">
+          <span>Employed</span>
+
+          <strong
+            id="employed"
+            class="green"
+          >
+            162
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Unemployed</span>
+
+          <strong
+            id="unemployed"
+            class="yellow"
+          >
+            22
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Students</span>
+
+          <strong id="students">
+            46
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Children</span>
+
+          <strong id="children">
+            18
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          🏠 Housing
+        </h2>
+
+        <div class="info">
+          <span>Homes</span>
+
+          <strong id="homes">
+            62
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Occupied</span>
+
+          <strong id="occupied">
+            87%
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Free Homes</span>
+
+          <strong
+            id="freeHomes"
+            class="green"
+          >
+            8
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>
+          😊 Citizen Mood
+        </h2>
+
+        <div class="info">
+          <span>Happiness</span>
+
+          <strong
+            id="happiness"
+            class="green"
+          >
+            82%
+          </strong>
+        </div>
+
+        <div class="info">
+          <span>Satisfaction</span>
+
+          <strong
+            id="satisfaction"
+            class="green"
+          >
+            High
+          </strong>
+        </div>
+
+      </div>
+
+
+    </aside>
+
+
+    <main class="main">
+
+
+      <div class="dashboard">
+
+
+        <div class="card">
+
+          <div class="card-title">
+            POPULATION GROWTH
+          </div>
+
+          <div
+            id="growth"
+            class="card-value green"
+          >
+            +4
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            EMPLOYMENT RATE
+          </div>
+
+          <div
+            id="employmentRate"
+            class="card-value"
+          >
+            88%
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            CITY HAPPINESS
+          </div>
+
+          <div
+            id="happinessCard"
+            class="card-value"
+          >
+            82%
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            DAILY MIGRATION
+          </div>
+
+          <div
+            id="migration"
+            class="card-value green"
+          >
+            +3
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <section class="section">
+
+        <h2>
+          📈 Citizen Distribution
+        </h2>
+
+
+        <div class="bars">
+
+
+          <div class="bar-row">
+
+            <span>
+              Workers
+            </span>
+
+            <div class="bar-background">
+
+              <div
+                id="workerBar"
+                class="bar bar-blue"
+                style="width: 65%;"
+              ></div>
+
+            </div>
+
+            <strong id="workerPercent">
+              65%
+            </strong>
+
+          </div>
+
+
+          <div class="bar-row">
+
+            <span>
+              Students
+            </span>
+
+            <div class="bar-background">
+
+              <div
+                id="studentBar"
+                class="bar bar-purple"
+                style="width: 19%;"
+              ></div>
+
+            </div>
+
+            <strong id="studentPercent">
+              19%
+            </strong>
+
+          </div>
+
+
+          <div class="bar-row">
+
+            <span>
+              Children
+            </span>
+
+            <div class="bar-background">
+
+              <div
+                id="childBar"
+                class="bar bar-green"
+                style="width: 7%;"
+              ></div>
+
+            </div>
+
+            <strong id="childPercent">
+              7%
+            </strong>
+
+          </div>
+
+
+          <div class="bar-row">
+
+            <span>
+              Unemployed
+            </span>
+
+            <div class="bar-background">
+
+              <div
+                id="unemployedBar"
+                class="bar bar-orange"
+                style="width: 9%;"
+              ></div>
+
+            </div>
+
+            <strong id="unemployedPercent">
+              9%
+            </strong>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          👨‍👩‍👧 Age Groups
+        </h2>
+
+
+        <div class="age-grid">
+
+
+          <div class="age-card">
+
+            <div class="age-icon">
+              👶
+            </div>
+
+            <div class="age-name">
+              Children
+            </div>
+
+            <div
+              id="ageChildren"
+              class="age-value"
+            >
+              18
+            </div>
+
+          </div>
+
+
+          <div class="age-card">
+
+            <div class="age-icon">
+              🧑
+            </div>
+
+            <div class="age-name">
+              Young Adults
+            </div>
+
+            <div
+              id="ageYoung"
+              class="age-value"
+            >
+              74
+            </div>
+
+          </div>
+
+
+          <div class="age-card">
+
+            <div class="age-icon">
+              👨
+            </div>
+
+            <div class="age-name">
+              Adults
+            </div>
+
+            <div
+              id="ageAdults"
+              class="age-value"
+            >
+              112
+            </div>
+
+          </div>
+
+
+          <div class="age-card">
+
+            <div class="age-icon">
+              👴
+            </div>
+
+            <div class="age-name">
+              Seniors
+            </div>
+
+            <div
+              id="ageSeniors"
+              class="age-value"
+            >
+              44
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          🚶 Citizen Activity
+        </h2>
+
+
+        <div class="activity-grid">
+
+
+          <div class="activity">
+
+            <div class="activity-top">
+
+              <span>
+                🏠 At Home
+              </span>
+
+              <strong id="atHome">
+                34%
+              </strong>
+
+            </div>
+
+            <div class="bar-background">
+
+              <div
+                id="homeBar"
+                class="bar bar-blue"
+                style="width: 34%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="activity">
+
+            <div class="activity-top">
+
+              <span>
+                💼 At Work
+              </span>
+
+              <strong id="atWork">
+                38%
+              </strong>
+
+            </div>
+
+            <div class="bar-background">
+
+              <div
+                id="workBar"
+                class="bar bar-green"
+                style="width: 38%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="activity">
+
+            <div class="activity-top">
+
+              <span>
+                🛒 Shopping
+              </span>
+
+              <strong id="shopping">
+                11%
+              </strong>
+
+            </div>
+
+            <div class="bar-background">
+
+              <div
+                id="shoppingBar"
+                class="bar bar-yellow"
+                style="width: 11%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="activity">
+
+            <div class="activity-top">
+
+              <span>
+                🌳 Parks
+              </span>
+
+              <strong id="parks">
+                7%
+              </strong>
+
+            </div>
+
+            <div class="bar-background">
+
+              <div
+                id="parksBar"
+                class="bar bar-purple"
+                style="width: 7%;"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <div
+          id="citizenAlert"
+          class="alert good-alert"
+        >
+          😊 Citizens are generally happy with city services.
+        </div>
+
+
+      </section>
+
+
+      <section class="section">
+
+        <h2>
+          ⚙️ Citizen Actions
+        </h2>
+
+        <div class="buttons">
+
+          <button
+            class="action-btn"
+            onclick="simulateMigration()"
+          >
+            👥 Simulate Migration
+          </button>
+
+          <button
+            class="action-btn"
+            onclick="updateCitizens()"
+          >
+            🔄 Refresh Statistics
+          </button>
+
+        </div>
+
+      </section>
+
+
+    </main>
+
+  </div>
+
+
+  <script>
+
+    let population = 248;
+
+    let happiness = 82;
+
+
+    const populationEl =
+      document.getElementById(
+        "population"
+      );
+
+    const employedEl =
+      document.getElementById(
+        "employed"
+      );
+
+    const unemployedEl =
+      document.getElementById(
+        "unemployed"
+      );
+
+    const studentsEl =
+      document.getElementById(
+        "students"
+      );
+
+    const childrenEl =
+      document.getElementById(
+        "children"
+      );
+
+    const homesEl =
+      document.getElementById(
+        "homes"
+      );
+
+    const occupiedEl =
+      document.getElementById(
+        "occupied"
+      );
+
+    const freeHomesEl =
+      document.getElementById(
+        "freeHomes"
+      );
+
+    const happinessEl =
+      document.getElementById(
+        "happiness"
+      );
+
+    const satisfactionEl =
+      document.getElementById(
+        "satisfaction"
+      );
+
+    const growthEl =
+      document.getElementById(
+        "growth"
+      );
+
+    const employmentRateEl =
+      document.getElementById(
+        "employmentRate"
+      );
+
+    const happinessCardEl =
+      document.getElementById(
+        "happinessCard"
+      );
+
+    const migrationEl =
+      document.getElementById(
+        "migration"
+      );
+
+
+    function updateCitizens() {
+
+      const workers =
+        Math.floor(
+          population * 0.65
+        );
+
+      const students =
+        Math.floor(
+          population * 0.19
+        );
+
+      const children =
+        Math.floor(
+          population * 0.07
+        );
+
+      const unemployed =
+        Math.floor(
+          population * 0.09
+        );
+
+
+      const youngAdults =
+        Math.floor(
+          population * 0.30
+        );
+
+      const adults =
+        Math.floor(
+          population * 0.45
+        );
+
+      const seniors =
+        Math.max(
+          0,
+          population -
+          children -
+          youngAdults -
+          adults
+        );
+
+
+      const homes =
+        Math.max(
+          1,
+          Math.ceil(
+            population / 4
+          )
+        );
+
+      const occupied =
+        Math.min(
+          100,
+          Math.floor(
+            (population /
+            (homes * 4)) *
+            100
+          )
+        );
+
+      const freeHomes =
+        Math.max(
+          0,
+          Math.floor(
+            homes -
+            population / 4
+          )
+        );
+
+
+      const employmentRate =
+        Math.floor(
+          (workers /
+          Math.max(
+            1,
+            workers + unemployed
+          )) *
+          100
+        );
+
+
+      const homeActivity =
+        Math.floor(
+          25 +
+          Math.random() * 15
+        );
+
+      const workActivity =
+        Math.floor(
+          30 +
+          Math.random() * 15
+        );
+
+      const shoppingActivity =
+        Math.floor(
+          7 +
+          Math.random() * 8
+        );
+
+      const parkActivity =
+        Math.floor(
+          4 +
+          Math.random() * 6
+        );
+
+
+      populationEl.textContent =
+        population.toLocaleString();
+
+      employedEl.textContent =
+        workers;
+
+      unemployedEl.textContent =
+        unemployed;
+
+      studentsEl.textContent =
+        students;
+
+      childrenEl.textContent =
+        children;
+
+
+      homesEl.textContent =
+        homes;
+
+      occupiedEl.textContent =
+        occupied + "%";
+
+      freeHomesEl.textContent =
+        freeHomes;
+
+
+      happinessEl.textContent =
+        happiness + "%";
+
+      happinessCardEl.textContent =
+        happiness + "%";
+
+
+      employmentRateEl.textContent =
+        employmentRate + "%";
+
+
+      growthEl.textContent =
+        "+4";
+
+
+      migrationEl.textContent =
+        "+3";
+
+
+      document.getElementById(
+        "workerBar"
+      ).style.width =
+        Math.floor(
+          (workers / population) * 100
+        ) + "%";
+
+      document.getElementById(
+        "workerPercent"
+      ).textContent =
+        Math.floor(
+          (workers / population) * 100
+        ) + "%";
+
+
+      document.getElementById(
+        "studentBar"
+      ).style.width =
+        Math.floor(
+          (students / population) * 100
+        ) + "%";
+
+      document.getElementById(
+        "studentPercent"
+      ).textContent =
+        Math.floor(
+          (students / population) * 100
+        ) + "%";
+
+
+      document.getElementById(
+        "childBar"
+      ).style.width =
+        Math.floor(
+          (children / population) * 100
+        ) + "%";
+
+      document.getElementById(
+        "childPercent"
+      ).textContent =
+        Math.floor(
+          (children / population) * 100
+        ) + "%";
+
+
+      document.getElementById(
+        "unemployedBar"
+      ).style.width =
+        Math.floor(
+          (unemployed / population) * 100
+        ) + "%";
+
+      document.getElementById(
+        "unemployedPercent"
+      ).textContent =
+        Math.floor(
+          (unemployed / population) * 100
+        ) + "%";
+
+
+      document.getElementById(
+        "ageChildren"
+      ).textContent =
+        children;
+
+      document.getElementById(
+        "ageYoung"
+      ).textContent =
+        youngAdults;
+
+      document.getElementById(
+        "ageAdults"
+      ).textContent =
+        adults;
+
+      document.getElementById(
+        "ageSeniors"
+      ).textContent =
+        seniors;
+
+
+      document.getElementById(
+        "atHome"
+      ).textContent =
+        homeActivity + "%";
+
+      document.getElementById(
+        "homeBar"
+      ).style.width =
+        homeActivity + "%";
+
+
+      document.getElementById(
+        "atWork"
+      ).textContent =
+        workActivity + "%";
+
+      document.getElementById(
+        "workBar"
+      ).style.width =
+        workActivity + "%";
+
+
+      document.getElementById(
+        "shopping"
+      ).textContent =
+        shoppingActivity + "%";
+
+      document.getElementById(
+        "shoppingBar"
+      ).style.width =
+        shoppingActivity + "%";
+
+
+      document.getElementById(
+        "parks"
+      ).textContent =
+        parkActivity + "%";
+
+      document.getElementById(
+        "parksBar"
+      ).style.width =
+        parkActivity + "%";
+
+
+      if (happiness >= 75) {
+
+        satisfactionEl.textContent =
+          "High";
+
+        satisfactionEl.className =
+          "green";
+
+      }
+
+      else if (happiness >= 50) {
+
+        satisfactionEl.textContent =
+          "Medium";
+
+        satisfactionEl.className =
+          "yellow";
+
+      }
+
+      else {
+
+        satisfactionEl.textContent =
+          "Low";
+
+        satisfactionEl.className =
+          "red";
+
+      }
+
+
+      updateAlert();
+
+    }
+
+
+    function updateAlert() {
+
+      const alert =
+        document.getElementById(
+          "citizenAlert"
+        );
+
+
+      if (happiness >= 75) {
+
+        alert.className =
+          "alert good-alert";
+
+        alert.textContent =
+          "😊 Citizens are generally happy with city services.";
+
+      }
+
+      else if (happiness >= 50) {
+
+        alert.className =
+          "alert warning-alert";
+
+        alert.textContent =
+          "⚠️ Citizen satisfaction is average. Consider improving city services.";
+
+      }
+
+      else {
+
+        alert.className =
+          "alert danger-alert";
+
+        alert.textContent =
+          "🚨 Citizens are unhappy. The city needs better services.";
+
+      }
+
+    }
+
+
+    function simulateMigration() {
+
+      const change =
+        Math.random() > 0.35
+          ? Math.floor(
+              1 + Math.random() * 6
+            )
+          : -Math.floor(
+              1 + Math.random() * 3
+            );
+
+
+      population =
+        Math.max(
+          0,
+          population + change
+        );
+
+
+      if (change > 0) {
+
+        happiness =
+          Math.min(
+            100,
+            happiness + 1
+          );
+
+      }
+
+      else {
+
+        happiness =
+          Math.max(
+            0,
+            happiness - 2
+          );
+
+      }
+
+
+      updateCitizens();
+
+    }
+
+
+    function goBack() {
+
+      window.location.href =
+        "../index.html";
+
+    }
+
+
+    updateCitizens();
+
+
+    setInterval(
+      function() {
+
+        simulateMigration();
+
+      },
+      10000
+    );
+
+  </script>
+
+</body>
+
+</html>
